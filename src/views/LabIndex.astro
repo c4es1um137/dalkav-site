@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import { localizePath, t, type Lang } from '../i18n';
+import { registry } from '../lab/registry';
+import { staticPage } from '../lib/page';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+---
+
+<BaseLayout lang={lang} title={t(lang, 'lab.title')} description={t(lang, 'lab.intro')} links={staticPage('/lab', lang)} current="lab">
+  <div class="container flex flex-col gap-12 py-16 md:gap-16 md:py-24 lg:py-32">
+    <SectionHeader level={1} title={t(lang, 'lab.title')} intro={t(lang, 'lab.intro')} />
+    <ul class="grid gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-6" role="list">
+      {
+        registry.map((tool) => (
+          <li>
+            <article class="card card-interactive flex h-full flex-col gap-4 p-6 md:p-8" data-reveal>
+              <div class="flex items-center justify-between gap-4">
+                <span class="inline-flex size-10 items-center justify-center rounded-xl border border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.03)] text-[#9EA5F0]">
+                  <Icon name="flask" size={18} />
+                </span>
+                <span class="pill">
+                  <span class={`size-1.5 rounded-full ${tool.status === 'live' ? 'bg-[#9FD4B0]' : 'bg-[#E6B98A]'}`} aria-hidden="true" />
+                  {t(lang, tool.status === 'live' ? 'lab.status.live' : 'lab.status.experimental')}
+                </span>
+              </div>
+              <h2 class="text-xl font-semibold tracking-tight text-foreground md:text-2xl">
+                <a href={localizePath(`/lab/${tool.slug}`, lang)} class="card-link">
+                  {tool.title[lang]}
+                </a>
+              </h2>
+              <p class="text-sm leading-relaxed text-foreground-muted md:text-base">{tool.summary[lang]}</p>
+            </article>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</BaseLayout>

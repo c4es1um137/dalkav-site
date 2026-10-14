@@ -1,0 +1,45 @@
+---
+// date · reading time · title · description · tags. Tags link to tag pages, so
+// only the title is the note link (no nested links).
+import Tag from './Tag.astro';
+import { t, upper, type Lang } from '../i18n';
+import type { Note } from '../lib/content';
+import { formatDate, isoDate } from '../lib/dates';
+
+interface Props {
+  note: Note;
+  /** Language of the page the card is on. */
+  lang: Lang;
+  headingLevel?: 2 | 3;
+}
+
+const { note, lang, headingLevel = 3 } = Astro.props;
+const { data } = note;
+const foreign = note.lang !== lang;
+const Heading = headingLevel === 2 ? 'h2' : 'h3';
+// Dates and reading time use the note's own language strings when it is foreign.
+const metaLang = note.lang;
+---
+
+<article class="card card-interactive flex flex-col gap-3 p-5 md:p-6" data-reveal>
+  <p class="label-text flex flex-wrap items-center gap-x-2 gap-y-1 text-foreground-muted" lang={foreign ? metaLang : undefined}>
+    <time datetime={isoDate(data.date)}>{formatDate(data.date, metaLang)}</time>
+    <span aria-hidden="true">·</span>
+    <span>{t(metaLang, 'notes.readingTime', { n: note.minutes })}</span>
+    {foreign && <span class="pill ml-1">{upper(note.lang, lang)}</span>}
+    {data.draft && <span class="pill border-[rgba(245,184,61,0.5)] text-[#F5B83D]">{t(lang, 'draft')}</span>}
+  </p>
+  <Heading class="text-xl leading-snug font-semibold tracking-tight text-foreground md:text-2xl">
+    <a href={note.url} class="card-link" hreflang={foreign ? note.lang : undefined} lang={foreign ? note.lang : undefined}>{data.title}</a>
+  </Heading>
+  <p class="text-sm leading-relaxed text-foreground-muted md:text-base" lang={foreign ? note.lang : undefined}>{data.description}</p>
+  <ul class="relative z-[2] flex flex-wrap gap-2" aria-label={t(lang, 'notes.tags')}>
+    {
+      data.tags.map((tag) => (
+        <li>
+          <Tag tag={tag} lang={note.lang} link />
+        </li>
+      ))
+    }
+  </ul>
+</article>

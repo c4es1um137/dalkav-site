@@ -1,0 +1,34 @@
+---
+// Obfuscated email (§5). No mailto: and no plain address in the HTML: the
+// address is stored as reversed+base64 parts in data-* attributes and
+// assembled by src/scripts/email.ts. Without JS a readable fallback shows.
+import { site } from '../config/site';
+import { t, type Lang } from '../i18n';
+import Icon from './Icon.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const decode = (part: string) => [...Buffer.from(part, 'base64').toString('utf8')].reverse().join('');
+const fallback = `${decode(site.email.user)} [at] ${decode(site.email.domain).replace(/\./g, ' [dot] ')}`;
+---
+
+<div data-email data-u={site.email.user} data-d={site.email.domain} data-copied={t(lang, 'contact.copied')} class="flex flex-col gap-4 sm:flex-row sm:items-center">
+  <p class="text-xl font-medium text-foreground md:text-2xl">
+    <span data-email-fallback>{fallback}</span>
+    <a data-email-link hidden class="text-accent-text-raised underline decoration-[rgba(124,133,227,0.45)] underline-offset-4 hover:decoration-current" href="#main"
+      ><span data-email-text></span></a
+    >
+  </p>
+  <button type="button" data-email-copy hidden class="btn btn-secondary btn-sm self-start sm:self-auto">
+    <Icon name="copy" />
+    {t(lang, 'contact.copy')}
+  </button>
+  <span data-email-status class="text-sm text-accent-text-raised" aria-live="polite"></span>
+</div>
+
+<script>
+  import '../scripts/email.ts';
+</script>

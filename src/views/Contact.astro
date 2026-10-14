@@ -1,0 +1,71 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Card from '../components/Card.astro';
+import Email from '../components/Email.astro';
+import Icon from '../components/Icon.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import { site } from '../config/site';
+import { localizePath, t, type Lang } from '../i18n';
+import { staticPage } from '../lib/page';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const linkClass =
+  'inline-flex min-h-11 items-center gap-3 rounded-lg text-foreground transition-colors duration-200 ease-out hover:text-[#C9CDF7]';
+---
+
+<BaseLayout lang={lang} title={t(lang, 'contact.title')} description={t(lang, 'contact.description')} links={staticPage('/contact', lang)} current="contact">
+  <div class="container flex flex-col gap-12 py-16 md:gap-16 md:py-24 lg:py-32">
+    <SectionHeader level={1} title={t(lang, 'contact.title')} intro={t(lang, 'contact.intro')} />
+
+    <Card variant="gradient" class="p-6 md:p-10">
+      <h2 class="label-text mb-5 text-accent-text-raised">{t(lang, 'contact.email')}</h2>
+      <Email lang={lang} />
+    </Card>
+
+    <section aria-labelledby="elsewhere">
+      <h2 id="elsewhere" class="label-text mb-5 text-foreground-muted">{t(lang, 'contact.elsewhere')}</h2>
+      <ul class="flex flex-col gap-2" role="list">
+        <li>
+          {
+            site.github ? (
+              <a href={site.github} class={linkClass} rel="me">
+                <Icon name="github" size={18} />
+                GitHub
+              </a>
+            ) : (
+              <span class="inline-flex min-h-11 items-center gap-3 text-foreground-muted">
+                <Icon name="github" size={18} />
+                {t(lang, 'todo.github')}
+              </span>
+            )
+          }
+        </li>
+        <li>
+          {
+            site.linkedin ? (
+              <a href={site.linkedin} class={linkClass} rel="me">
+                <Icon name="linkedin" size={18} />
+                LinkedIn
+              </a>
+            ) : (
+              <span class="inline-flex min-h-11 items-center gap-3 text-foreground-muted">
+                <Icon name="linkedin" size={18} />
+                {t(lang, 'todo.linkedin')}
+              </span>
+            )
+          }
+        </li>
+        <li>
+          <a href={localizePath('/cv', lang)} class={linkClass}>
+            <Icon name="file" size={18} />
+            {t(lang, 'nav.cv')}
+          </a>
+        </li>
+      </ul>
+    </section>
+  </div>
+</BaseLayout>

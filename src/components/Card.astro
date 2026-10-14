@@ -1,0 +1,22 @@
+---
+// Base card (§3.1): gradient surface, 1px border, top glow line, three-layer
+// shadow, optional mouse-tracking spotlight (src/scripts/effects.ts).
+import type { HTMLTag } from 'astro/types';
+
+interface Props {
+  as?: HTMLTag;
+  variant?: 'default' | 'glass' | 'gradient';
+  /** Lifts, glows and shows the gradient border on hover/focus. */
+  interactive?: boolean;
+  class?: string;
+  [key: `data-${string}`]: string | boolean | undefined;
+  lang?: string;
+}
+
+const { as: Tag = 'div', variant = 'default', interactive = false, class: className = '', ...rest } = Astro.props;
+const classes = ['card', variant !== 'default' ? `card-${variant}` : '', interactive ? 'card-interactive' : '', className]
+  .filter(Boolean)
+  .join(' ');
+---
+
+<Tag class={classes} {...rest}><slot /></Tag>

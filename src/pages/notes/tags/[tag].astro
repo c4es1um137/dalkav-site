@@ -1,0 +1,12 @@
+---
+import type { GetStaticPaths } from 'astro';
+import Tag from '../../../views/Tag.astro';
+import { tagCounts } from '../../../lib/content';
+
+export const getStaticPaths = (async () =>
+  (await tagCounts('en')).map(({ tag }) => ({ params: { tag } }))) satisfies GetStaticPaths;
+
+const { tag } = Astro.params;
+---
+
+<Tag lang="en" tag={tag} />

@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BentoGrid from '../components/BentoGrid.astro';
+import OtherLanguageList from '../components/OtherLanguageList.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import { t, type Lang } from '../i18n';
+import { allProjects, onlyInOther } from '../lib/content';
+import { staticPage } from '../lib/page';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const all = await allProjects();
+const projects = all.filter((p) => p.lang === lang);
+const others = onlyInOther(all, lang);
+---
+
+<BaseLayout lang={lang} title={t(lang, 'projects.title')} description={t(lang, 'projects.intro')} links={staticPage('/projects', lang)} current="projects">
+  <div class="container flex flex-col gap-12 py-16 md:gap-16 md:py-24 lg:py-32">
+    <SectionHeader level={1} title={t(lang, 'projects.title')} intro={t(lang, 'projects.intro')} />
+    <BentoGrid projects={projects} lang={lang} headingLevel={2} />
+    <OtherLanguageList lang={lang} items={others.map((p) => ({ url: p.url, title: p.data.title, lang: p.lang, meta: p.data.summary }))} />
+  </div>
+</BaseLayout>

@@ -1,0 +1,64 @@
+---
+import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import { site } from '../config/site';
+import { localizePath, t, type Lang } from '../i18n';
+import { getTool } from '../lab/registry';
+import { staticPage } from '../lib/page';
+
+interface Props {
+  lang: Lang;
+  slug: string;
+}
+
+const { lang, slug } = Astro.props;
+const tool = getTool(slug);
+
+// Each tool's UI lives in src/lab/<slug>/Tool.astro; no per-tool page files.
+const tools = import.meta.glob<{ default: AstroComponentFactory }>('../lab/*/Tool.astro', { eager: true });
+const Tool = tools[`../lab/${slug}/Tool.astro`]?.default;
+if (!Tool) throw new Error(`src/lab/${slug}/Tool.astro is missing.`);
+const source = site.repo ? `${site.repo.replace(/\/$/, '')}/tree/main/src/lab/${slug}` : '';
+---
+
+<BaseLayout lang={lang} title={tool.title[lang]} description={tool.summary[lang]} links={staticPage(`/lab/${slug}`, lang)} current="lab" isIndex={false}>
+  <div class="container py-16 md:py-24">
+    <a
+      href={localizePath('/lab', lang)}
+      class="mb-10 inline-flex min-h-11 items-center gap-2 text-sm text-foreground-muted transition-colors duration-200 ease-out hover:text-foreground"
+    >
+      <Icon name="arrow-left" />
+      {t(lang, 'lab.title')}
+    </a>
+    <header class="max-w-3xl">
+      <p class="label-text mb-5 text-accent-text">LAB · {t(lang, tool.status === 'live' ? 'lab.status.live' : 'lab.status.experimental')}</p>
+      <h1 class="text-gradient-headline text-4xl leading-tight font-semibold tracking-tight md:text-5xl lg:text-6xl">{tool.title[lang]}</h1>
+      <p class="mt-6 text-lg leading-relaxed text-foreground-muted md:text-xl">{tool.summary[lang]}</p>
+    </header>
+
+    <div class="mt-12 max-w-3xl">
+      <Tool lang={lang} />
+    </div>
+
+    <section class="mt-16 max-w-3xl" aria-labelledby="how-it-works">
+      <h2 id="how-it-works" class="text-2xl font-semibold tracking-tight text-foreground md:text-3xl">{t(lang, 'lab.howItWorks')}</h2>
+      <p class="mt-4 leading-relaxed text-[#C6C9D0] md:text-lg">{tool.howItWorks[lang]}</p>
+      <p class="mt-6">
+        {
+          source ? (
+            <a href={source} class="inline-flex min-h-11 items-center gap-2 text-accent-text underline decoration-[rgba(104,114,217,0.45)] underline-offset-4 hover:decoration-current">
+              <Icon name="github" />
+              {t(lang, 'lab.source')}
+            </a>
+          ) : (
+            <span class="inline-flex min-h-11 items-center gap-2 text-foreground-muted">
+              <Icon name="github" />
+              {t(lang, 'lab.source')}: [TODO: set site.repo in src/config/site.ts]
+            </span>
+          )
+        }
+      </p>
+    </section>
+  </div>
+</BaseLayout>

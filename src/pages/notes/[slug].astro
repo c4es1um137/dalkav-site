@@ -1,0 +1,12 @@
+---
+import type { GetStaticPaths } from 'astro';
+import Note from '../../views/Note.astro';
+import { notesIn } from '../../lib/content';
+
+export const getStaticPaths = (async () =>
+  (await notesIn('en')).map((n) => ({ params: { slug: n.slug } }))) satisfies GetStaticPaths;
+
+const { slug } = Astro.params;
+---
+
+<Note lang="en" slug={slug} />

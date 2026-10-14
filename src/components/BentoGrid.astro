@@ -1,0 +1,27 @@
+---
+// Asymmetric bento grid (§3.1): 6 columns on desktop, 2 on tablet, 1 on mobile.
+// Placement comes from src/lib/bento.ts as static classes (no inline styles).
+import ProjectCard from './ProjectCard.astro';
+import type { Lang } from '../i18n';
+import { bentoLayout } from '../lib/bento';
+import type { Project } from '../lib/content';
+
+interface Props {
+  projects: Project[];
+  lang: Lang;
+  headingLevel?: 2 | 3;
+}
+
+const { projects, lang, headingLevel = 3 } = Astro.props;
+const cells = bentoLayout(projects.map((p) => p.data.bento));
+---
+
+<ul class="bento" role="list">
+  {
+    projects.map((project, i) => (
+      <li class={cells[i].className}>
+        <ProjectCard project={project} lang={lang} large={cells[i].height > 1} headingLevel={headingLevel} />
+      </li>
+    ))
+  }
+</ul>

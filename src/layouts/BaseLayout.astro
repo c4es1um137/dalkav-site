@@ -1,0 +1,80 @@
+---
+import { Font } from 'astro:assets';
+import '../styles/global.css';
+import AmbientBackground from '../components/AmbientBackground.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import Seo from '../components/Seo.astro';
+import TestBanner from '../components/TestBanner.astro';
+import { env } from '../env';
+import { t, type Lang } from '../i18n';
+import { defaultOgImage } from '../lib/og';
+import type { NavKey, PageLinks } from '../lib/page';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  links: PageLinks;
+  current?: NavKey;
+  isIndex?: boolean;
+  ogImage?: string;
+  ogImageAlt?: string;
+  ogType?: 'website' | 'article' | 'profile';
+  jsonLd?: Record<string, unknown>[];
+  noindex?: boolean;
+}
+
+const { lang, title, description, links, current, isIndex = true, ogImageAlt, ogType, jsonLd, noindex } = Astro.props;
+const ogImage = Astro.props.ogImage ?? (await defaultOgImage(lang));
+---
+
+<!doctype html>
+<html lang={lang} dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#050506" />
+    <meta name="build" content={env.buildSha} />
+    {/* Apply a saved "Pause animations" choice before first paint (CSP-hashed by Astro). */}
+    <script is:inline>
+      try {
+        if (localStorage.getItem('motion') === 'paused') document.documentElement.dataset.motion = 'paused';
+      } catch (e) {}
+    </script>
+    <Font cssVariable="--font-inter" preload={[{ subset: 'latin', style: 'normal' }]} />
+    <Font cssVariable="--font-jetbrains-mono" />
+    <Seo
+      lang={lang}
+      title={title}
+      description={description}
+      links={links}
+      ogImage={ogImage}
+      ogImageAlt={ogImageAlt}
+      ogType={ogType}
+      jsonLd={jsonLd}
+      noindex={noindex}
+    />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  </head>
+  <body>
+    <a
+      href="#main"
+      class="skip-link sr-only z-50 rounded-lg bg-accent px-4 py-3 font-medium text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+      >{t(lang, 'a11y.skip')}</a
+    >
+    <AmbientBackground />
+    {env.isTest && <TestBanner lang={lang} />}
+    <Header lang={lang} current={current} isIndex={isIndex} switcher={links.switcher} />
+    <main id="main" tabindex="-1" class="relative">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+    <script>
+      import '../scripts/effects.ts';
+    </script>
+  </body>
+</html>

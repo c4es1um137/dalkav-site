@@ -1,0 +1,26 @@
+---
+interface Props {
+  label?: string;
+  title: string;
+  intro?: string;
+  /** Heading level; section headers on index pages are h2, page titles h1. */
+  level?: 1 | 2;
+  id?: string;
+}
+
+const { label, title, intro, level = 2, id } = Astro.props;
+const Heading = level === 1 ? 'h1' : 'h2';
+const headingClass =
+  level === 1
+    ? 'text-gradient-headline text-4xl leading-tight font-semibold tracking-tight md:text-5xl lg:text-6xl'
+    : 'text-gradient-headline text-3xl leading-tight font-semibold tracking-tight md:text-4xl';
+---
+
+<div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+  <div class="max-w-3xl">
+    {label && <p class="label-text text-accent-text mb-4">{label}</p>}
+    <Heading id={id} class={headingClass}>{title}</Heading>
+    {intro && <p class="text-foreground-muted mt-4 text-base leading-relaxed md:text-lg">{intro}</p>}
+  </div>
+  <slot name="action" />
+</div>

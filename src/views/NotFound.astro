@@ -1,0 +1,27 @@
+---
+// Served by Pages with a real 404 status: the closest 404.html up the tree,
+// so /tr/* misses get the Turkish page.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import { localizePath, t, type Lang } from '../i18n';
+import { staticPage } from '../lib/page';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+---
+
+<BaseLayout lang={lang} title={t(lang, 'notFound.title')} description={t(lang, 'notFound.description')} links={staticPage('/404', lang)} noindex>
+  <div class="container py-24 md:py-32">
+    <p class="label-text mb-5 text-accent-text">404</p>
+    <h1 class="text-gradient-headline text-4xl leading-tight font-semibold tracking-tight md:text-5xl lg:text-6xl">{t(lang, 'notFound.title')}</h1>
+    <p class="mt-6 max-w-2xl text-lg text-foreground-muted">{t(lang, 'notFound.body')}</p>
+    <div class="mt-10 flex flex-col gap-3 sm:flex-row">
+      <Button href={localizePath('/', lang)} variant="primary">{t(lang, 'nav.home')}</Button>
+      <Button href={localizePath('/projects', lang)} variant="secondary">{t(lang, 'nav.projects')}</Button>
+      <Button href={localizePath('/notes', lang)} variant="secondary">{t(lang, 'nav.notes')}</Button>
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,59 @@
+---
+// <title>, description, canonical, hreflang, Open Graph, Twitter and JSON-LD.
+import { env } from '../env';
+import { LOCALE, otherLang, t, type Lang } from '../i18n';
+import type { PageLinks } from '../lib/page';
+import { OG_HEIGHT, OG_WIDTH } from '../lib/og';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  links: PageLinks;
+  ogImage: string;
+  ogImageAlt?: string;
+  ogType?: 'website' | 'article' | 'profile';
+  jsonLd?: Record<string, unknown>[];
+  noindex?: boolean;
+}
+
+const { lang, title, description, links, ogImage, ogImageAlt, ogType = 'website', jsonLd = [], noindex = false } = Astro.props;
+
+const abs = (path: string) => new URL(path, env.site).href;
+const fullTitle = `${env.isTest ? '[TEST] ' : ''}${title} · ${t(lang, 'site.name')}`;
+const robots = env.isTest ? 'noindex, nofollow' : noindex ? 'noindex' : undefined;
+const other = otherLang(lang);
+const hasOther = Boolean(links.alternates[other]);
+// JSON-LD is data, not script; escape "<" so it can never close the tag.
+const ld = (data: Record<string, unknown>) => JSON.stringify(data).replace(/</g, '\\u003c');
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+{robots && <meta name="robots" content={robots} />}
+<link rel="canonical" href={abs(links.path)} />
+{
+  (Object.entries(links.alternates) as [Lang, string][]).map(([hreflang, href]) => (
+    <link rel="alternate" hreflang={hreflang} href={abs(href)} />
+  ))
+}
+<link rel="alternate" hreflang="x-default" href={abs(links.xDefault)} />
+<link rel="alternate" type="application/rss+xml" title={`${t(lang, 'site.name')} · ${t(lang, 'notes.title')}`} href={lang === 'en' ? '/rss.xml' : '/tr/rss.xml'} />
+
+<meta property="og:site_name" content={t(lang, 'site.name')} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={abs(links.path)} />
+<meta property="og:type" content={ogType} />
+<meta property="og:locale" content={LOCALE[lang].og} />
+{hasOther && <meta property="og:locale:alternate" content={LOCALE[other].og} />}
+<meta property="og:image" content={abs(ogImage)} />
+<meta property="og:image:width" content={String(OG_WIDTH)} />
+<meta property="og:image:height" content={String(OG_HEIGHT)} />
+<meta property="og:image:type" content="image/png" />
+{ogImageAlt && <meta property="og:image:alt" content={ogImageAlt} />}
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={abs(ogImage)} />
+{jsonLd.map((data) => <script is:inline type="application/ld+json" set:html={ld(data)} />)}

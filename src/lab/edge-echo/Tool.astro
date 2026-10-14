@@ -1,0 +1,28 @@
+---
+// Works without JS: the form GETs the endpoint and the browser shows the JSON.
+// With JS, client.ts fetches it and renders a definition list into <output>.
+import Card from '../../components/Card.astro';
+import { t, type Lang } from '../../i18n';
+import meta from './meta';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+---
+
+<Card class="p-6 md:p-8">
+  <form method="get" action={meta.apiPath} class="flex flex-col gap-6" data-edge-echo data-labels={JSON.stringify(meta.labels[lang])} data-loading={t(lang, 'lab.loading')} data-error={t(lang, 'lab.error')}>
+    <div>
+      <button type="submit" class="btn btn-primary">{t(lang, 'lab.run')}</button>
+    </div>
+    <output class="block min-h-24 rounded-xl border border-border-default bg-[#0a0a0c] p-5 font-mono text-sm text-foreground-muted" aria-live="polite" aria-label={t(lang, 'lab.result')}>
+      <span class="label-text">{meta.apiPath}</span>
+    </output>
+  </form>
+</Card>
+
+<script>
+  import './client.ts';
+</script>

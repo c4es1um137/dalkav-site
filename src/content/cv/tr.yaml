@@ -1,0 +1,49 @@
+# Türkçe özgeçmiş. Yalnızca gerçek bilgiler; bilinmeyenler doldurulana kadar görünür [TODO: …] olarak kalır.
+name: "Bahadır [TODO: soyadı]"
+headline: "Elektrik Mühendisliği öğrencisi · İTÜ Racing eski takım kaptanı"
+location: "İstanbul, Türkiye"
+summary: "İTÜ'de Elektrik Mühendisliği lisans öğrencisiyim. Formula Student'ta yüksek gerilim akümülatör sistemleri ve elektrikli araç teknik muayenesi üzerinde uygulamalı deneyim kazandım; 2024–25 sezonunda İTÜ Racing'in kaptanıydım. Mühendislik stajı arıyorum [TODO: hedef dönem]."
+
+experience:
+  - org: "İTÜ Racing (Formula Student)"
+    role: "Takım Kaptanı"
+    period: "2024–2025"
+    bullets:
+      - "[TODO: takım büyüklüğü, kapsam, önemli kararlar]"
+  - org: "İTÜ Racing (Formula Student)"
+    role: "Elektrik Sistemleri üyesi"
+    period: "2022–2024"
+    bullets:
+      - "Yüksek gerilim akümülatörü ve çekiş sistemi üzerinde çalıştım [TODO: ayrıntılar]"
+      - "Elektrik sistemlerini teknik muayeneye hazırladım [TODO]"
+  - org: "VISP"
+    role: "[TODO: rol]"
+    period: "[TODO: tarihler]"
+    bullets:
+      - "Sporcular için giyilebilir stres kırığı tespit sistemi."
+
+education:
+  - school: "İstanbul Teknik Üniversitesi (İTÜ)"
+    degree: "Elektrik Mühendisliği, lisans"
+    period: "2022–[TODO: tahmini mezuniyet]"
+
+skills:
+  - category: "Donanım"
+    items: ["[TODO]"]
+  - category: "Yazılım"
+    items: ["[TODO]"]
+  - category: "Araçlar"
+    items: ["[TODO]"]
+  - category: "Laboratuvar/Test"
+    items: ["[TODO]"]
+
+languages:
+  - name: "Türkçe"
+    level: "Ana dil"
+  - name: "İngilizce"
+    level: "[TODO]"
+
+# Profil bağlantılarını öğrenince ekle, örn.:
+#   - label: "GitHub"
+#     url: "https://github.com/<kullanıcı-adı>"
+links: []

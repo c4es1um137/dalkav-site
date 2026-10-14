@@ -1,0 +1,154 @@
+---
+import { getEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import Card from '../components/Card.astro';
+import { site } from '../config/site';
+import { env } from '../env';
+import { otherLang, t, type Lang } from '../i18n';
+import { personJsonLd } from '../lib/jsonld';
+import { staticPage } from '../lib/page';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const entry = await getEntry('cv', lang);
+if (!entry) throw new Error(`src/content/cv/${lang}.yaml is missing.`);
+const cv = entry.data;
+const other = otherLang(lang);
+const links = staticPage('/cv', lang);
+const sectionTitle = 'label-text mb-6 text-accent-text';
+// Labels on cards use the raised accent (#6872D9 drops below 4.5:1 on card surfaces).
+const cardTitle = 'label-text mb-6 text-accent-text-raised';
+---
+
+<BaseLayout
+  lang={lang}
+  title={t(lang, 'cv.title')}
+  description={t(lang, 'cv.description')}
+  links={links}
+  current="cv"
+  ogType="profile"
+  jsonLd={[{ ...personJsonLd(lang, new URL(links.path, env.site).href), description: cv.summary }]}
+>
+  <div class="container py-16 md:py-24">
+    <header class="flex flex-col gap-8 border-b border-border-default pb-12 md:flex-row md:items-end md:justify-between">
+      <div class="max-w-3xl">
+        <p class="label-text mb-5 text-accent-text">{t(lang, 'cv.title')}</p>
+        <h1 class="text-gradient-headline text-4xl leading-tight font-semibold tracking-tight md:text-5xl lg:text-6xl">{cv.name}</h1>
+        <p class="mt-4 text-lg text-foreground md:text-xl">{cv.headline}</p>
+        <p class="mt-2 text-foreground-muted">{cv.location}</p>
+      </div>
+      <div class="no-print flex flex-col items-start gap-3 md:items-end">
+        <Button href={site.cv[lang]} variant="primary" icon="download" type="application/pdf">{t(lang, 'cv.download')}</Button>
+        <a href={site.cv[other]} hreflang={other} type="application/pdf" class="inline-flex min-h-6 items-center text-sm text-accent-text underline decoration-[rgba(104,114,217,0.45)] underline-offset-4 hover:decoration-current">
+          {t(lang, 'cv.otherPdf')}
+        </a>
+      </div>
+    </header>
+
+    <div class="mt-12 grid gap-12 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-16">
+      <div class="flex flex-col gap-14">
+        <section aria-labelledby="cv-summary">
+          <h2 id="cv-summary" class={sectionTitle}>{t(lang, 'cv.summary')}</h2>
+          <p class="max-w-[68ch] text-base leading-relaxed text-[#C6C9D0] md:text-lg">{cv.summary}</p>
+        </section>
+
+        <section aria-labelledby="cv-experience">
+          <h2 id="cv-experience" class={sectionTitle}>{t(lang, 'cv.experience')}</h2>
+          <ol class="flex flex-col gap-8">
+            {
+              cv.experience.map((job) => (
+                <li class="grid gap-2 sm:grid-cols-[9rem_minmax(0,1fr)] sm:gap-6">
+                  <p class="label-text pt-1 text-foreground-muted">{job.period}</p>
+                  <div>
+                    <h3 class="text-lg font-semibold tracking-tight text-foreground md:text-xl">{job.role}</h3>
+                    <p class="text-foreground-muted">{job.org}</p>
+                    {job.bullets.length > 0 && (
+                      <ul class="mt-3 list-disc pl-5 text-[#C6C9D0] marker:text-foreground-muted">
+                        {job.bullets.map((b) => (
+                          <li class="mb-1.5">{b}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </li>
+              ))
+            }
+          </ol>
+        </section>
+
+        <section aria-labelledby="cv-education">
+          <h2 id="cv-education" class={sectionTitle}>{t(lang, 'cv.education')}</h2>
+          <ol class="flex flex-col gap-6">
+            {
+              cv.education.map((ed) => (
+                <li class="grid gap-2 sm:grid-cols-[9rem_minmax(0,1fr)] sm:gap-6">
+                  <p class="label-text pt-1 text-foreground-muted">{ed.period}</p>
+                  <div>
+                    <h3 class="text-lg font-semibold tracking-tight text-foreground md:text-xl">{ed.school}</h3>
+                    <p class="text-foreground-muted">{ed.degree}</p>
+                    {ed.notes.length > 0 && (
+                      <ul class="mt-3 list-disc pl-5 text-[#C6C9D0]">
+                        {ed.notes.map((n) => (
+                          <li>{n}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </li>
+              ))
+            }
+          </ol>
+        </section>
+      </div>
+
+      <aside class="flex flex-col gap-6" aria-label={`${t(lang, 'cv.skills')}, ${t(lang, 'cv.languages')}`}>
+        <Card class="p-6">
+          <h2 class={cardTitle}>{t(lang, 'cv.skills')}</h2>
+          <dl class="flex flex-col gap-4">
+            {
+              cv.skills.map((group) => (
+                <div>
+                  <dt class="text-sm font-medium text-foreground">{group.category}</dt>
+                  <dd class="mt-1 text-sm text-foreground-muted">{group.items.join(' · ')}</dd>
+                </div>
+              ))
+            }
+          </dl>
+        </Card>
+        <Card class="p-6">
+          <h2 class={cardTitle}>{t(lang, 'cv.languages')}</h2>
+          <dl class="flex flex-col gap-3">
+            {
+              cv.languages.map((l) => (
+                <div class="flex justify-between gap-4">
+                  <dt class="text-sm font-medium text-foreground">{l.name}</dt>
+                  <dd class="text-sm text-foreground-muted">{l.level}</dd>
+                </div>
+              ))
+            }
+          </dl>
+        </Card>
+        <Card class="p-6">
+          <h2 class={cardTitle}>{t(lang, 'cv.links')}</h2>
+          <ul class="flex flex-col gap-2 text-sm">
+            {
+              cv.links.map((l) => (
+                <li>
+                  <a href={l.url} class="text-accent-text-raised underline decoration-[rgba(124,133,227,0.45)] underline-offset-4 hover:decoration-current">
+                    {l.label}
+                  </a>
+                </li>
+              ))
+            }
+            {site.github ? <li><a href={site.github} class="text-accent-text-raised underline underline-offset-4">GitHub</a></li> : <li class="text-foreground-muted">{t(lang, 'todo.github')}</li>}
+            {site.linkedin ? <li><a href={site.linkedin} class="text-accent-text-raised underline underline-offset-4">LinkedIn</a></li> : <li class="text-foreground-muted">{t(lang, 'todo.linkedin')}</li>}
+          </ul>
+        </Card>
+      </aside>
+    </div>
+  </div>
+</BaseLayout>

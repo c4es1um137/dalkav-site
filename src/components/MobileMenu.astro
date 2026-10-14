@@ -1,0 +1,55 @@
+---
+// Below 768px. A <details> disclosure, so it opens without JS; effects.ts adds
+// Esc (focus returns to the toggle), outside click and link click to close.
+import { site } from '../config/site';
+import { localizePath, t, type Lang } from '../i18n';
+import type { NavKey, Switcher } from '../lib/page';
+import Button from './Button.astro';
+import Icon from './Icon.astro';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+
+interface Props {
+  lang: Lang;
+  current?: NavKey;
+  isIndex: boolean;
+  switcher: Switcher;
+  items: Array<{ key: NavKey; href: string; label: string }>;
+}
+
+const { lang, current, isIndex, switcher, items } = Astro.props;
+---
+
+<details class="menu md:hidden" data-menu>
+  <summary class="btn btn-ghost btn-sm min-h-11 min-w-11 px-2.5">
+    <span class="icon-open inline-flex"><Icon name="menu" size={20} /><span class="sr-only">{t(lang, 'menu.open')}</span></span>
+    <span class="icon-close"><Icon name="x" size={20} /><span class="sr-only">{t(lang, 'menu.close')}</span></span>
+  </summary>
+  <div class="menu-panel">
+    <div class="container flex flex-col gap-4 py-4">
+      <nav aria-label={t(lang, 'nav.label')}>
+        <ul class="flex flex-col gap-1">
+          <li>
+            <a href={localizePath('/', lang)} class="menu-link" aria-current={current === 'home' ? 'page' : undefined}>
+              {t(lang, 'nav.home')}
+            </a>
+          </li>
+          {
+            items.map((item) => (
+              <li>
+                <a href={item.href} class="menu-link" aria-current={current === item.key ? (isIndex ? 'page' : 'true') : undefined}>
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+      <div class="flex items-center justify-between border-t border-border-default pt-4">
+        <LanguageSwitcher lang={lang} switcher={switcher} />
+      </div>
+      <Button href={site.cv[lang]} variant="primary" icon="download" class="w-full" type="application/pdf">
+        {t(lang, 'cta.downloadCv')}
+      </Button>
+    </div>
+  </div>
+</details>

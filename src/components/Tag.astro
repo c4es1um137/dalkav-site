@@ -1,0 +1,25 @@
+---
+import { localizePath, type Lang } from '../i18n';
+
+interface Props {
+  tag: string;
+  lang: Lang;
+  /** Link to the tag page (only notes have tag pages). */
+  link?: boolean;
+  count?: number;
+}
+
+const { tag, lang, link = false, count } = Astro.props;
+const href = localizePath(`/notes/tags/${tag}`, lang);
+---
+
+{
+  link ? (
+    <a href={href} class="pill transition-colors duration-200 ease-out hover:border-[rgba(124,133,227,0.7)] hover:text-[#C9CDF7]">
+      #{tag}
+      {count !== undefined && <span class="text-foreground-muted">{count}</span>}
+    </a>
+  ) : (
+    <span class="pill">#{tag}</span>
+  )
+}

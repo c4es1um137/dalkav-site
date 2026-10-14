@@ -1,0 +1,15 @@
+---
+// Test environment only (rendered by BaseLayout when SITE_ENV is not production).
+// Full width, top, not dismissible.
+import { t, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+---
+
+<div class="test-banner px-4 py-2 text-center" data-test-banner>
+  <p class="label-text font-semibold">{t(lang, 'banner.test')}</p>
+</div>

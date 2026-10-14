@@ -1,0 +1,94 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BentoGrid from '../components/BentoGrid.astro';
+import Button from '../components/Button.astro';
+import Card from '../components/Card.astro';
+import Hero from '../components/Hero.astro';
+import NoteCard from '../components/NoteCard.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import { site } from '../config/site';
+import { env } from '../env';
+import { localizePath, t, type Lang } from '../i18n';
+import { notesIn, projectsIn } from '../lib/content';
+import { personJsonLd } from '../lib/jsonld';
+import { staticPage } from '../lib/page';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const links = staticPage('/', lang);
+const featured = (await projectsIn(lang)).filter((p) => p.data.featured).slice(0, 4);
+const latest = (await notesIn(lang)).slice(0, 3);
+---
+
+<BaseLayout
+  lang={lang}
+  title={t(lang, 'home.title')}
+  description={t(lang, 'home.description')}
+  links={links}
+  current="home"
+  ogType="profile"
+  jsonLd={[personJsonLd(lang, new URL(links.path, env.site).href)]}
+>
+  <Hero lang={lang} />
+
+  <section class="border-t border-border-default py-16 md:py-24 lg:py-32" aria-labelledby="selected-projects">
+    <div class="container flex flex-col gap-10 md:gap-12">
+      <SectionHeader id="selected-projects" title={t(lang, 'home.selectedProjects')}>
+        <a
+          slot="action"
+          href={localizePath('/projects', lang)}
+          class="inline-flex min-h-11 items-center gap-2 text-sm font-medium text-accent-text transition-colors duration-200 ease-out hover:text-[#7C85E3]"
+        >
+          {t(lang, 'cta.allProjects')}
+          <span aria-hidden="true">→</span>
+        </a>
+      </SectionHeader>
+      <BentoGrid projects={featured} lang={lang} />
+    </div>
+  </section>
+
+  <section class="border-t border-border-default py-16 md:py-24 lg:py-32" aria-labelledby="latest-notes">
+    <div class="container flex flex-col gap-10 md:gap-12">
+      <SectionHeader id="latest-notes" title={t(lang, 'home.latestNotes')}>
+        <a
+          slot="action"
+          href={localizePath('/notes', lang)}
+          class="inline-flex min-h-11 items-center gap-2 text-sm font-medium text-accent-text transition-colors duration-200 ease-out hover:text-[#7C85E3]"
+        >
+          {t(lang, 'cta.allNotes')}
+          <span aria-hidden="true">→</span>
+        </a>
+      </SectionHeader>
+      {
+        latest.length > 0 ? (
+          <ul class="grid gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-6" role="list">
+            {latest.map((note) => (
+              <li>
+                <NoteCard note={note} lang={lang} />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="text-foreground-muted">{t(lang, 'notes.empty')}</p>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="py-16 md:py-24 lg:py-32" aria-labelledby="closing">
+    <div class="container">
+      <Card variant="gradient" class="flex flex-col items-start gap-8 p-8 md:flex-row md:items-center md:justify-between md:p-12" data-reveal>
+        <h2 id="closing" class="max-w-2xl text-2xl leading-snug font-semibold tracking-tight text-foreground md:text-3xl">
+          {t(lang, 'home.closing')}
+        </h2>
+        <div class="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+          <Button href={site.cv[lang]} variant="primary" icon="download" type="application/pdf">{t(lang, 'cta.downloadCv')}</Button>
+          <Button href={localizePath('/contact', lang)} variant="secondary" icon="mail">{t(lang, 'nav.contact')}</Button>
+        </div>
+      </Card>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,24 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import Icon from './Icon.astro';
+
+type IconName = Parameters<typeof Icon>[0]['name'];
+
+interface Props extends Omit<HTMLAttributes<'a'>, 'class'> {
+  href: string;
+  variant?: 'primary' | 'secondary' | 'ghost';
+  size?: 'md' | 'sm';
+  icon?: IconName;
+  iconEnd?: IconName;
+  class?: string;
+}
+
+const { href, variant = 'primary', size = 'md', icon, iconEnd, class: className = '', ...rest } = Astro.props;
+const classes = ['btn', `btn-${variant}`, size === 'sm' ? 'btn-sm' : '', className].filter(Boolean).join(' ');
+---
+
+<a href={href} class={classes} {...rest}>
+  {icon && <Icon name={icon} />}
+  <slot />
+  {iconEnd && <Icon name={iconEnd} />}
+</a>

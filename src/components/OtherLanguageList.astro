@@ -1,0 +1,42 @@
+---
+// "Only in Turkish" / "Yalnızca İngilizce": entries that exist only in the other
+// language, with a language badge, hreflang, and lang on the title (§2.1).
+import { t, upper, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+  items: Array<{ url: string; title: string; lang: Lang; meta?: string }>;
+}
+
+const { lang, items } = Astro.props;
+---
+
+{
+  items.length > 0 && (
+    <section aria-labelledby="other-language" class="border-t border-border-default pt-10">
+      <h2 id="other-language" class="label-text mb-5 text-foreground-muted">
+        {t(lang, 'lang.onlyInOther')}
+      </h2>
+      <ul class="flex flex-col gap-3" role="list">
+        {items.map((item) => (
+          <li class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <span class="pill">{upper(item.lang, lang)}</span>
+            <a
+              href={item.url}
+              hreflang={item.lang}
+              lang={item.lang}
+              class="text-base font-medium text-accent-text underline decoration-[rgba(104,114,217,0.45)] underline-offset-4 hover:decoration-current"
+            >
+              {item.title}
+            </a>
+            {item.meta && (
+              <span class="w-full text-sm text-foreground-muted sm:w-auto" lang={item.lang}>
+                {item.meta}
+              </span>
+            )}
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}

@@ -1,0 +1,39 @@
+---
+// Links to the counterpart page, or to the same section's index in the other
+// language when there is no translation. Visible label "TR"/"EN"; the accessible
+// name ("TR · Türkçe", "EN · English notes (no translation of this note)") is in
+// the target language, and lang/hreflang mark the target.
+import { otherLang, t, type Lang } from '../i18n';
+import Icon from './Icon.astro';
+import type { Switcher } from '../lib/page';
+
+interface Props {
+  lang: Lang;
+  switcher: Switcher;
+  class?: string;
+}
+
+const { lang, switcher, class: className = '' } = Astro.props;
+const target = otherLang(lang);
+// The accessible name starts with the visible label ("TR"/"EN") so it passes
+// WCAG 2.5.3 Label in Name, followed by the name in the target language.
+const description = switcher.exists
+  ? t(target, 'lang.name')
+  : switcher.section === 'projects'
+    ? t(target, 'lang.projectsNoTranslation')
+    : switcher.section === 'notes'
+      ? t(target, 'lang.notesNoTranslation')
+      : t(target, 'lang.name');
+const name = `${t(target, 'lang.code')} · ${description}`;
+---
+
+<a
+  href={switcher.href}
+  lang={target}
+  hreflang={target}
+  aria-label={name}
+  class={`label-text inline-flex min-h-9 min-w-11 items-center justify-center gap-1.5 rounded-lg px-2.5 text-foreground-muted transition-colors duration-200 ease-out hover:bg-[rgba(255,255,255,0.05)] hover:text-foreground ${className}`}
+>
+  <Icon name="globe" size={14} />
+  {t(target, 'lang.code')}
+</a>

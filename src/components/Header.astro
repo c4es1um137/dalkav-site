@@ -1,0 +1,62 @@
+---
+import { site } from '../config/site';
+import { localizePath, t, type Lang } from '../i18n';
+import type { NavKey, Switcher } from '../lib/page';
+import Button from './Button.astro';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import MobileMenu from './MobileMenu.astro';
+
+interface Props {
+  lang: Lang;
+  current?: NavKey;
+  /** True on section index pages: aria-current="page"; on entries "true". */
+  isIndex?: boolean;
+  switcher: Switcher;
+}
+
+const { lang, current, isIndex = true, switcher } = Astro.props;
+
+const items: Array<{ key: NavKey; href: string; label: string }> = [
+  { key: 'projects', href: localizePath('/projects', lang), label: t(lang, 'nav.projects') },
+  { key: 'notes', href: localizePath('/notes', lang), label: t(lang, 'nav.notes') },
+  { key: 'lab', href: localizePath('/lab', lang), label: t(lang, 'nav.lab') },
+  { key: 'cv', href: localizePath('/cv', lang), label: t(lang, 'nav.cv') },
+  { key: 'contact', href: localizePath('/contact', lang), label: t(lang, 'nav.contact') },
+];
+const ariaCurrent = (key: NavKey) => (current === key ? (isIndex ? 'page' : 'true') : undefined);
+---
+
+<header class="site-header">
+  <div class="container flex h-full items-center justify-between gap-4">
+    <a
+      href={localizePath('/', lang)}
+      class="-ml-2 inline-flex min-h-11 items-center rounded-lg px-2 text-[1.0625rem] font-semibold tracking-tight text-foreground"
+      aria-current={current === 'home' ? 'page' : undefined}
+    >
+      {t(lang, 'site.name')}
+    </a>
+
+    <nav aria-label={t(lang, 'nav.label')} class="hidden md:block">
+      <ul class="flex items-center gap-1">
+        {
+          items.map((item) => (
+            <li>
+              <a href={item.href} class="nav-link" aria-current={ariaCurrent(item.key)}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="hidden items-center gap-2 md:flex">
+      <LanguageSwitcher lang={lang} switcher={switcher} />
+      <Button href={site.cv[lang]} variant="secondary" size="sm" icon="download" type="application/pdf">
+        {t(lang, 'cta.downloadCv')}
+      </Button>
+    </div>
+
+    <MobileMenu lang={lang} current={current} isIndex={isIndex} switcher={switcher} items={items} />
+  </div>
+</header>

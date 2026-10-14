@@ -1,0 +1,4 @@
+# Copy to .dev.vars (gitignored) for `npm run preview` (wrangler pages dev).
+# These mirror the Pages dashboard variables. No real secrets here.
+SITE_ENV=development
+LAB_EDGE_ECHO_MESSAGE=Hello from local development

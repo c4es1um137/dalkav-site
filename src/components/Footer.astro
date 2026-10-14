@@ -1,0 +1,75 @@
+---
+import { site } from '../config/site';
+import { env } from '../env';
+import { t, type Lang } from '../i18n';
+import Icon from './Icon.astro';
+import MotionSwitch from './MotionSwitch.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const year = new Date().getUTCFullYear();
+const rss = lang === 'en' ? '/rss.xml' : '/tr/rss.xml';
+const linkClass =
+  'inline-flex min-h-9 items-center gap-2 rounded-lg px-2 text-sm text-foreground-muted transition-colors duration-200 ease-out hover:text-foreground';
+---
+
+<footer class="site-footer bg-background-deep border-border-default border-t">
+  <div class="container flex flex-col gap-6 py-10 md:flex-row md:items-center md:justify-between">
+    <p class="text-sm text-foreground-muted">© {year} {t(lang, 'site.name')}</p>
+
+    <nav aria-label={t(lang, 'footer.social')}>
+      <ul class="flex flex-wrap items-center gap-x-2 gap-y-1">
+        <li>
+          {
+            site.github ? (
+              <a href={site.github} class={linkClass} rel="me">
+                <Icon name="github" />
+                GitHub
+              </a>
+            ) : (
+              <span class={linkClass}>
+                <Icon name="github" />
+                {t(lang, 'todo.github')}
+              </span>
+            )
+          }
+        </li>
+        <li>
+          {
+            site.linkedin ? (
+              <a href={site.linkedin} class={linkClass} rel="me">
+                <Icon name="linkedin" />
+                LinkedIn
+              </a>
+            ) : (
+              <span class={linkClass}>
+                <Icon name="linkedin" />
+                {t(lang, 'todo.linkedin')}
+              </span>
+            )
+          }
+        </li>
+        <li>
+          <a href={rss} class={linkClass}>
+            <Icon name="rss" />
+            {t(lang, 'footer.rss')}
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="flex flex-col gap-3 md:items-end">
+      <MotionSwitch lang={lang} />
+      {
+        !env.isProduction && (
+          <p class="label-text text-foreground-muted">
+            {t(lang, 'footer.build')} <span data-build-sha>{env.buildSha}</span> · {env.branch}
+          </p>
+        )
+      }
+    </div>
+  </div>
+</footer>

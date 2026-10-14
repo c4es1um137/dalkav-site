@@ -1,0 +1,17 @@
+---
+// "Pause animations" (WCAG 2.2.2). A native checkbox: without JS it still works
+// through `html:has(#motion-pause:checked)`; effects.ts only persists the choice,
+// and the inline head script in BaseLayout applies it before first paint.
+import { t, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+---
+
+<label for="motion-pause" class="inline-flex min-h-6 cursor-pointer items-center gap-3 text-sm text-foreground-muted">
+  <input type="checkbox" id="motion-pause" class="switch" role="switch" />
+  <span>{t(lang, 'footer.pauseMotion')}</span>
+</label>

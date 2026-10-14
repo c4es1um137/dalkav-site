@@ -1,0 +1,32 @@
+{
+  "name": "dalkav-site",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "check": "astro check",
+    "build": "astro check && astro build && node scripts/content-guard.mjs && node scripts/verify-dist.mjs",
+    "build:site": "astro build",
+    "guard": "node scripts/content-guard.mjs",
+    "verify-dist": "node scripts/verify-dist.mjs",
+    "preview": "wrangler pages dev dist",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/markdown-satteri": "0.4.3",
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.4",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.3.8",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.150.0"
+  }
+}

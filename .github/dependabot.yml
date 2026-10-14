@@ -1,0 +1,21 @@
+# Dependency updates land on `test` first, then ship with the next release PR.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    target-branch: test
+    schedule:
+      interval: monthly
+    groups:
+      npm-dependencies:
+        patterns: ['*']
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: test
+    schedule:
+      interval: monthly
+    groups:
+      github-actions:
+        patterns: ['*']

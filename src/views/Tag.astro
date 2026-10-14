@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import NoteCard from '../components/NoteCard.astro';
+import { localizePath, t, type Lang } from '../i18n';
+import { notesIn, tagCounts } from '../lib/content';
+import type { PageLinks } from '../lib/page';
+
+interface Props {
+  lang: Lang;
+  tag: string;
+}
+
+const { lang, tag } = Astro.props;
+const notes = (await notesIn(lang)).filter((n) => n.data.tags.includes(tag));
+const other = lang === 'en' ? 'tr' : 'en';
+const otherHasTag = (await tagCounts(other)).some((c) => c.tag === tag);
+const self = localizePath(`/notes/tags/${tag}`, lang);
+const otherPath = localizePath(`/notes/tags/${tag}`, other);
+const links: PageLinks = {
+  path: self,
+  alternates: otherHasTag ? { [lang]: self, [other]: otherPath } : { [lang]: self },
+  xDefault: lang === 'en' ? self : otherHasTag ? otherPath : '/notes',
+  switcher: otherHasTag ? { href: otherPath, exists: true } : { href: localizePath('/notes', other), exists: false, section: 'notes' },
+};
+---
+
+<BaseLayout
+  lang={lang}
+  title={t(lang, 'notes.tagTitle', { tag })}
+  description={t(lang, 'notes.tagDescription', { tag })}
+  links={links}
+  current="notes"
+  isIndex={false}
+>
+  <div class="container flex flex-col gap-12 py-16 md:py-24 lg:py-32">
+    <header>
+      <a
+        href={localizePath('/notes', lang)}
+        class="mb-10 inline-flex min-h-11 items-center gap-2 text-sm text-foreground-muted transition-colors duration-200 ease-out hover:text-foreground"
+      >
+        <Icon name="arrow-left" />
+        {t(lang, 'cta.allNotes')}
+      </a>
+      <h1 class="text-gradient-headline text-4xl leading-tight font-semibold tracking-tight md:text-5xl lg:text-6xl">#{tag}</h1>
+      <p class="mt-4 text-foreground-muted">{notes.length === 1 ? t(lang, 'notes.countOne') : t(lang, 'notes.count', { n: notes.length })}</p>
+    </header>
+    <ul class="grid gap-4 md:grid-cols-2 lg:gap-6" role="list">
+      {
+        notes.map((note) => (
+          <li>
+            <NoteCard note={note} lang={lang} headingLevel={2} />
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</BaseLayout>

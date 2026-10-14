@@ -1,0 +1,70 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import NoteCard from '../components/NoteCard.astro';
+import OtherLanguageList from '../components/OtherLanguageList.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import Tag from '../components/Tag.astro';
+import { t, type Lang } from '../i18n';
+import { allNotes, onlyInOther, tagCounts } from '../lib/content';
+import { staticPage } from '../lib/page';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const all = await allNotes();
+const notes = all.filter((n) => n.lang === lang);
+const others = onlyInOther(all, lang);
+const tags = await tagCounts(lang);
+const rss = lang === 'en' ? '/rss.xml' : '/tr/rss.xml';
+---
+
+<BaseLayout lang={lang} title={t(lang, 'notes.title')} description={t(lang, 'notes.intro')} links={staticPage('/notes', lang)} current="notes">
+  <div class="container flex flex-col gap-12 py-16 md:gap-16 md:py-24 lg:py-32">
+    <SectionHeader level={1} title={t(lang, 'notes.title')} intro={t(lang, 'notes.intro')}>
+      <a
+        slot="action"
+        href={rss}
+        class="inline-flex min-h-11 items-center gap-2 text-sm font-medium text-accent-text transition-colors duration-200 ease-out hover:text-[#7C85E3]"
+      >
+        <Icon name="rss" />
+        {t(lang, 'notes.rss')}
+      </a>
+    </SectionHeader>
+
+    {
+      tags.length > 0 && (
+        <section aria-labelledby="tags">
+          <h2 id="tags" class="label-text mb-4 text-foreground-muted">
+            {t(lang, 'notes.tags')}
+          </h2>
+          <ul class="flex flex-wrap gap-2" role="list">
+            {tags.map(({ tag, count }) => (
+              <li>
+                <Tag tag={tag} lang={lang} link count={count} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    {
+      notes.length > 0 ? (
+        <ul class="grid gap-4 md:grid-cols-2 lg:gap-6" role="list">
+          {notes.map((note) => (
+            <li>
+              <NoteCard note={note} lang={lang} headingLevel={2} />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="text-foreground-muted">{t(lang, 'notes.empty')}</p>
+      )
+    }
+
+    <OtherLanguageList lang={lang} items={others.map((n) => ({ url: n.url, title: n.data.title, lang: n.lang, meta: n.data.description }))} />
+  </div>
+</BaseLayout>

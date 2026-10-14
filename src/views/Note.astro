@@ -1,0 +1,140 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import Tag from '../components/Tag.astro';
+import { localizePath, t, type Lang } from '../i18n';
+import { allNotes, hasCounterpart, neighbours, relatedProjects } from '../lib/content';
+import { formatDate, isoDate } from '../lib/dates';
+import { blogPostingJsonLd } from '../lib/jsonld';
+import { defaultOgImage } from '../lib/og';
+import { entryPage } from '../lib/page';
+
+interface Props {
+  lang: Lang;
+  slug: string;
+}
+
+const { lang, slug } = Astro.props;
+const all = await allNotes();
+const list = all.filter((n) => n.lang === lang);
+const index = list.findIndex((n) => n.slug === slug);
+const note = list[index];
+if (!note) throw new Error(`Note ${lang}/${slug} not found`);
+const { data } = note;
+const { Content } = await render(note.entry);
+// Lists are newest first: "previous" is the older note.
+const { prev: newer, next: older } = neighbours(list, index);
+const projects = await relatedProjects(note, lang);
+const links = entryPage('notes', slug, lang, hasCounterpart(all, slug, lang));
+const ogImage = await defaultOgImage(lang);
+const rss = lang === 'en' ? '/rss.xml' : '/tr/rss.xml';
+const [updatedBefore, updatedAfter = ''] = t(lang, 'notes.updated').split('{date}');
+---
+
+<BaseLayout
+  lang={lang}
+  title={data.title}
+  description={data.description}
+  links={links}
+  current="notes"
+  isIndex={false}
+  ogImage={ogImage}
+  ogType="article"
+  jsonLd={[blogPostingJsonLd(note, ogImage)]}
+>
+  <article class="container py-16 md:py-24">
+    <header class="max-w-[68ch]">
+      <a
+        href={localizePath('/notes', lang)}
+        class="mb-10 inline-flex min-h-11 items-center gap-2 text-sm text-foreground-muted transition-colors duration-200 ease-out hover:text-foreground"
+      >
+        <Icon name="arrow-left" />
+        {t(lang, 'cta.allNotes')}
+      </a>
+      <p class="label-text mb-5 flex flex-wrap items-center gap-3 text-accent-text">
+        <span><time datetime={isoDate(data.date)}>{formatDate(data.date, lang)}</time> · {t(lang, 'notes.readingTime', { n: note.minutes })}</span>
+        {data.draft && <span class="pill border-[rgba(245,184,61,0.5)] text-[#F5B83D]">{t(lang, 'draft')}</span>}
+      </p>
+      <h1 class="text-gradient-headline text-4xl leading-tight font-semibold tracking-tight md:text-5xl">{data.title}</h1>
+      <p class="mt-6 text-lg leading-relaxed text-foreground-muted md:text-xl">{data.description}</p>
+      <ul class="mt-6 flex flex-wrap gap-2" aria-label={t(lang, 'notes.tags')}>
+        {
+          data.tags.map((tag) => (
+            <li>
+              <Tag tag={tag} lang={lang} link />
+            </li>
+          ))
+        }
+      </ul>
+    </header>
+
+    <div class="gradient-line mt-12 max-w-[68ch]"></div>
+
+    <div class="prose mt-12">
+      <Content />
+    </div>
+
+    {
+      data.updated && (
+        <p class="label-text mt-10 text-foreground-muted">
+          {updatedBefore}
+          <time datetime={isoDate(data.updated)}>{formatDate(data.updated, lang)}</time>
+          {updatedAfter}
+        </p>
+      )
+    }
+
+    {
+      projects.length > 0 && (
+        <section class="mt-16 max-w-3xl" aria-labelledby="related-project">
+          <h2 id="related-project" class="label-text mb-5 text-foreground-muted">
+            {t(lang, 'notes.relatedProject')}
+          </h2>
+          <ul class="grid gap-4" role="list">
+            {projects.map((project) => (
+              <li>
+                <ProjectCard project={project} lang={lang} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    <nav class="mt-16 grid max-w-3xl gap-4 border-t border-border-default pt-10 sm:grid-cols-2" aria-label={`${t(lang, 'notes.prev')} / ${t(lang, 'notes.next')}`}>
+      {
+        older ? (
+          <a href={older.url} class="card card-interactive flex flex-col gap-2 p-5" rel="prev">
+            <span class="label-text flex items-center gap-2 text-foreground-muted">
+              <Icon name="arrow-left" size={14} />
+              {t(lang, 'notes.prev')}
+            </span>
+            <span class="font-medium text-foreground">{older.data.title}</span>
+          </a>
+        ) : (
+          <span />
+        )
+      }
+      {
+        newer && (
+          <a href={newer.url} class="card card-interactive flex flex-col items-end gap-2 p-5 text-right" rel="next">
+            <span class="label-text flex items-center gap-2 text-foreground-muted">
+              {t(lang, 'notes.next')}
+              <Icon name="arrow-right" size={14} />
+            </span>
+            <span class="font-medium text-foreground">{newer.data.title}</span>
+          </a>
+        )
+      }
+    </nav>
+
+    <p class="mt-10">
+      <a href={rss} class="inline-flex min-h-11 items-center gap-2 text-sm font-medium text-accent-text hover:text-[#7C85E3]">
+        <Icon name="rss" />
+        {t(lang, 'notes.rss')}
+      </a>
+    </p>
+  </article>
+</BaseLayout>

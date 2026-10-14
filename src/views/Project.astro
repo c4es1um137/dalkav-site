@@ -1,0 +1,207 @@
+---
+// Project evidence page (§2.3).
+import { render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Card from '../components/Card.astro';
+import Cover from '../components/Cover.astro';
+import Icon from '../components/Icon.astro';
+import NoteCard from '../components/NoteCard.astro';
+import { localizePath, t, type Lang } from '../i18n';
+import { allProjects, formatPeriod, hasCounterpart, neighbours, relatedNotes } from '../lib/content';
+import { coverOgImage } from '../lib/og';
+import { entryPage } from '../lib/page';
+import { Picture } from 'astro:assets';
+
+interface Props {
+  lang: Lang;
+  slug: string;
+}
+
+const { lang, slug } = Astro.props;
+const all = await allProjects();
+const list = all.filter((p) => p.lang === lang);
+const index = list.findIndex((p) => p.slug === slug);
+const project = list[index];
+if (!project) throw new Error(`Project ${lang}/${slug} not found`);
+const { data } = project;
+const { Content } = await render(project.entry);
+const { prev, next } = neighbours(list, index);
+const notes = await relatedNotes(slug, lang);
+const links = entryPage('projects', slug, lang, hasCounterpart(all, slug, lang));
+const ogImage = await coverOgImage(data.cover, lang);
+const period = formatPeriod(data.period, lang);
+const statusLabel = t(lang, data.status === 'ongoing' ? 'status.ongoing' : 'status.completed');
+const factLabel = 'label-text text-foreground-muted';
+---
+
+<BaseLayout
+  lang={lang}
+  title={data.title}
+  description={data.summary}
+  links={links}
+  current="projects"
+  isIndex={false}
+  ogImage={ogImage}
+  ogImageAlt={data.coverAlt}
+  ogType="article"
+>
+  <article class="container py-16 md:py-24">
+    <header class="max-w-4xl">
+      <a
+        href={localizePath('/projects', lang)}
+        class="mb-10 inline-flex min-h-11 items-center gap-2 text-sm text-foreground-muted transition-colors duration-200 ease-out hover:text-foreground"
+      >
+        <Icon name="arrow-left" />
+        {t(lang, 'cta.allProjects')}
+      </a>
+      <p class="label-text mb-5 flex flex-wrap items-center gap-3 text-accent-text">
+        <span>{t(lang, 'projects.label')} · {period}</span>
+        {data.draft && <span class="pill border-[rgba(245,184,61,0.5)] text-[#F5B83D]">{t(lang, 'draft')}</span>}
+      </p>
+      <h1 class="text-gradient-headline text-4xl leading-tight font-semibold tracking-tight md:text-5xl lg:text-6xl">{data.title}</h1>
+      <p class="mt-6 text-lg leading-relaxed text-foreground-muted md:text-xl">{data.summary}</p>
+    </header>
+
+    <Card class="mt-12 p-6 md:p-8">
+      <dl class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div>
+          <dt class={factLabel}>{t(lang, 'projects.role')}</dt>
+          <dd class="mt-2 text-foreground">{data.role}</dd>
+        </div>
+        <div>
+          <dt class={factLabel}>{t(lang, 'projects.period')}</dt>
+          <dd class="mt-2 text-foreground">{period}</dd>
+        </div>
+        <div>
+          <dt class={factLabel}>{t(lang, 'projects.status')}</dt>
+          <dd class="mt-2">
+            <span class="pill">
+              <span class={`size-1.5 rounded-full ${data.status === 'ongoing' ? 'bg-[#9FD4B0]' : 'bg-[#8A8F98]'}`} aria-hidden="true"></span>
+              {statusLabel}
+            </span>
+          </dd>
+        </div>
+        <div>
+          <dt class={factLabel}>{t(lang, 'projects.tags')}</dt>
+          <dd class="mt-2 flex flex-wrap gap-2">{data.tags.map((tag) => <span class="pill">#{tag}</span>)}</dd>
+        </div>
+        {
+          data.links.length > 0 && (
+            <div class="sm:col-span-2 lg:col-span-4">
+              <dt class={factLabel}>{t(lang, 'projects.links')}</dt>
+              <dd class="mt-2 flex flex-wrap gap-x-6 gap-y-2">
+                {data.links.map((link) => (
+                  <a href={link.url} class="inline-flex min-h-6 items-center gap-1.5 text-accent-text-raised underline decoration-[rgba(124,133,227,0.45)] underline-offset-4 hover:decoration-current">
+                    {link.label}
+                    <Icon name="arrow-up-right" size={14} />
+                  </a>
+                ))}
+              </dd>
+            </div>
+          )
+        }
+      </dl>
+    </Card>
+
+    <figure class="mt-10 overflow-hidden rounded-2xl border border-border-default bg-[#0a0a0c] shadow-card">
+      <Cover src={data.cover} alt={data.coverAlt} priority class="block h-auto w-full" sizes="(min-width: 1280px) 1216px, 100vw" />
+    </figure>
+
+    <div class="mt-16 grid gap-12 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-16">
+      <div class="prose">
+        <Content />
+      </div>
+
+      {
+        data.results.length > 0 && (
+          <aside aria-labelledby="results">
+            <Card variant="gradient" class="p-6 md:p-8 lg:sticky lg:top-24">
+              <h2 id="results" class="label-text mb-5 text-accent-text-raised">
+                {t(lang, 'projects.results')}
+              </h2>
+              <ul class="flex flex-col gap-4">
+                {data.results.map((result) => (
+                  <li class="flex gap-3 text-foreground">
+                    <Icon name="check" class="mt-1 text-[#9FD4B0]" />
+                    <span>{result}</span>
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          </aside>
+        )
+      }
+    </div>
+
+    {
+      data.gallery.length > 0 && (
+        <section class="mt-20" aria-labelledby="gallery">
+          <h2 id="gallery" class="text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
+            {t(lang, 'projects.gallery')}
+          </h2>
+          <div class="mt-8 grid gap-6 md:grid-cols-2">
+            {data.gallery.map((item) => (
+              <figure data-reveal>
+                <Picture
+                  src={item.src}
+                  alt={item.alt}
+                  formats={['avif', 'webp']}
+                  widths={[480, 800, 1200].filter((w) => w <= item.src.width)}
+                  sizes="(min-width: 768px) 50vw, 100vw"
+                  loading="lazy"
+                  decoding="async"
+                  class="w-full rounded-2xl border border-border-default"
+                />
+                {item.caption && <figcaption class="mt-3 text-sm text-foreground-muted">{item.caption}</figcaption>}
+              </figure>
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    {
+      notes.length > 0 && (
+        <section class="mt-20 border-t border-border-default pt-16" aria-labelledby="related-notes">
+          <h2 id="related-notes" class="text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
+            {t(lang, 'projects.relatedNotes')}
+          </h2>
+          <ul class="mt-8 grid gap-4 md:grid-cols-2 lg:gap-6" role="list">
+            {notes.map((note) => (
+              <li>
+                <NoteCard note={note} lang={lang} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    <nav class="mt-20 grid gap-4 border-t border-border-default pt-10 sm:grid-cols-2" aria-label={`${t(lang, 'projects.prev')} / ${t(lang, 'projects.next')}`}>
+      {
+        prev ? (
+          <a href={prev.url} class="card card-interactive flex flex-col gap-2 p-5" rel="prev">
+            <span class="label-text flex items-center gap-2 text-foreground-muted">
+              <Icon name="arrow-left" size={14} />
+              {t(lang, 'projects.prev')}
+            </span>
+            <span class="font-medium text-foreground">{prev.data.title}</span>
+          </a>
+        ) : (
+          <span />
+        )
+      }
+      {
+        next && (
+          <a href={next.url} class="card card-interactive flex flex-col items-end gap-2 p-5 text-right" rel="next">
+            <span class="label-text flex items-center gap-2 text-foreground-muted">
+              {t(lang, 'projects.next')}
+              <Icon name="arrow-right" size={14} />
+            </span>
+            <span class="font-medium text-foreground">{next.data.title}</span>
+          </a>
+        )
+      }
+    </nav>
+  </article>
+</BaseLayout>

@@ -1,0 +1,937 @@
+@import "tailwindcss";
+@import "./prose.css";
+
+/* =========================================================================
+   Design system "Linear / Modern" (docs/DESIGN.md). Dark only.
+   Every token is also a CSS custom property via @theme.
+   ========================================================================= */
+
+@theme {
+  /* §3.1 colour tokens */
+  --color-background-deep: #020203;
+  --color-background-base: #050506;
+  --color-background-elevated: #0a0a0c;
+  --color-surface: rgba(255, 255, 255, 0.05);
+  --color-surface-hover: rgba(255, 255, 255, 0.08);
+  --color-foreground: #ededef;
+  --color-foreground-muted: #8a8f98;
+  --color-foreground-subtle: rgba(255, 255, 255, 0.6);
+  --color-accent: #5e6ad2;
+  --color-accent-bright: #6872d9;
+  --color-accent-glow: rgba(94, 106, 210, 0.3);
+  --color-border-default: rgba(255, 255, 255, 0.06);
+  --color-border-hover: rgba(255, 255, 255, 0.1);
+  --color-border-accent: rgba(94, 106, 210, 0.3);
+
+  /* §3.3 added tokens */
+  --color-accent-text: #6872d9;
+  --color-accent-text-raised: #7c85e3;
+  --color-foreground-prose: #c6c9d0;
+  --color-input: #0f0f12;
+  --color-code-bg: #0a0a0c;
+  --color-code-border: rgba(255, 255, 255, 0.06);
+  --color-code-fg: #ededef;
+  --color-code-comment: #8a8f98;
+  --color-code-keyword: #9ea5f0;
+  --color-code-string: #9fd4b0;
+  --color-code-number: #e6b98a;
+  --color-code-function: #c9cdf7;
+  --color-code-type: #8cc8e8;
+  --color-code-punctuation: #a1a5ad;
+  --color-code-inline-bg: rgba(255, 255, 255, 0.06);
+  --color-code-line-highlight: rgba(94, 106, 210, 0.12);
+  --color-selection: rgba(94, 106, 210, 0.35);
+  --color-test-banner-bg: #f5b83d;
+  --color-test-banner-fg: #050506;
+
+  /* Typography: Inter / JetBrains Mono from Astro's Fonts API (self-hosted). */
+  --font-sans: var(--font-inter), "Geist Sans", system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+
+  /* Motion */
+  --ease-expo-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* §3.1 shadows (three layers each) */
+  --shadow-card: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 2px 20px rgba(0, 0, 0, 0.4), 0 0 40px rgba(0, 0, 0, 0.2);
+  --shadow-card-hover: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 8px 40px rgba(0, 0, 0, 0.5), 0 0 80px rgba(94, 106, 210, 0.1);
+  --shadow-accent-glow: 0 0 0 1px rgba(94, 106, 210, 0.5), 0 4px 12px rgba(94, 106, 210, 0.3), inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
+  --shadow-inner-highlight: inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+
+  --animate-float: float 9s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(1deg);
+  }
+}
+
+@keyframes pulse-scale {
+  0%,
+  100% {
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    transform: translateX(-50%) scale(1.12);
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-parallax {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(100px) scale(0.95);
+  }
+}
+
+/* =========================================================================
+   Motion switch: one rule set for reduced motion and "Pause animations".
+   --play pauses CSS animations at their first frame (blobs stay visible);
+   --lift turns hover movement off.
+   ========================================================================= */
+
+:root {
+  --play: running;
+  --lift: -4px;
+  --header-h: 4rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --play: paused;
+    --lift: 0px;
+  }
+}
+
+html:has(#motion-pause:checked),
+html[data-motion="paused"] {
+  --play: paused;
+  --lift: 0px;
+}
+
+/* =========================================================================
+   Base
+   ========================================================================= */
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-padding-top: calc(var(--header-h) + 1rem);
+    background-color: #050506;
+  }
+
+  body {
+    /* Plain hex so text never depends on newer colour functions. */
+    background-color: #050506;
+    color: #ededef;
+    font-family: var(--font-sans);
+    line-height: 1.625;
+    min-height: 100vh;
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: rgba(94, 106, 210, 0.35);
+    color: #ededef;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    overflow-wrap: break-word;
+    text-wrap: balance;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* §3.2 #4: always-visible focus ring that passes 3:1 (1.4.11). */
+  :focus-visible {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px #050506, 0 0 0 4px #7c85e3;
+    border-radius: 0.375rem;
+  }
+
+  [tabindex="-1"]:focus {
+    outline: none;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: #8a8f98;
+    opacity: 1;
+  }
+
+  img,
+  svg {
+    max-width: 100%;
+  }
+
+  img {
+    height: auto;
+  }
+}
+
+/* =========================================================================
+   Utilities (custom). Class names are listed in docs/DESIGN.md.
+   ========================================================================= */
+
+/* v4 removed container centring/padding config; redefine it. */
+@utility container {
+  margin-inline: auto;
+  padding-inline: 1rem;
+  width: 100%;
+  max-width: 80rem;
+
+  @media (width >= 48rem) {
+    padding-inline: 2rem;
+  }
+}
+
+@utility label-text {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* §3.1 gradient headline text, with fallbacks (§3.2 #7). */
+@utility text-gradient-headline {
+  color: var(--color-foreground);
+
+  @supports ((background-clip: text) or (-webkit-background-clip: text)) {
+    background-image: linear-gradient(to bottom, #ffffff 0%, rgba(255, 255, 255, 0.95) 50%, rgba(255, 255, 255, 0.7) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+
+  @media (forced-colors: active) {
+    background-image: none;
+    color: CanvasText;
+    -webkit-text-fill-color: CanvasText;
+  }
+}
+
+/* §3.2 #6: accent gradient text, large text only; shimmer runs 2 cycles (5s) then stops. */
+@utility text-gradient-accent {
+  color: #6872d9;
+
+  @supports ((background-clip: text) or (-webkit-background-clip: text)) {
+    background-image: linear-gradient(to right, #6872d9 0%, #818cf8 50%, #6872d9 100%);
+    background-size: 200% 100%;
+    background-position: 100% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 2.5s var(--ease-expo-out) 2 both;
+    animation-play-state: var(--play);
+  }
+
+  @media (forced-colors: active) {
+    background-image: none;
+    color: LinkText;
+    -webkit-text-fill-color: LinkText;
+  }
+}
+
+@utility gradient-line {
+  height: 1px;
+  border: 0;
+  background-image: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.1), transparent);
+}
+
+/* Pills/tags (§3.3). */
+@utility pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(94, 106, 210, 0.3);
+  padding: 0.25rem 0.625rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: #7c85e3;
+  min-height: 1.5rem;
+}
+
+/* =========================================================================
+   Components
+   ========================================================================= */
+
+@layer components {
+  /* ---- Ambient background (§3.1 layers, §3.4 budget) ---- */
+  .ambient {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+    contain: strict;
+    background-color: #050506;
+    background-image: radial-gradient(ellipse at top, #0a0a0f 0%, #050506 50%, #020203 100%);
+  }
+
+  .ambient-noise,
+  .ambient-grid {
+    position: absolute;
+    inset: 0;
+  }
+
+  .ambient-noise {
+    opacity: 0.015;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .ambient-grid {
+    opacity: 0.02;
+    background-image:
+      linear-gradient(to right, #ffffff 1px, transparent 1px),
+      linear-gradient(to bottom, #ffffff 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+
+  .blob {
+    position: absolute;
+    border-radius: 9999px;
+    will-change: transform;
+    animation: float 9s ease-in-out infinite;
+    animation-play-state: var(--play);
+  }
+
+  .blob-primary {
+    top: -700px;
+    left: 50%;
+    width: 900px;
+    height: 1400px;
+    margin-left: -450px;
+    background: rgba(94, 106, 210, 0.25);
+    filter: blur(150px);
+  }
+
+  .blob-secondary {
+    top: 10%;
+    left: -300px;
+    width: 600px;
+    height: 800px;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(236, 72, 153, 0.15));
+    filter: blur(120px);
+    animation-duration: 10s;
+    animation-delay: -3s;
+  }
+
+  .blob-tertiary {
+    top: 30%;
+    right: -250px;
+    width: 500px;
+    height: 700px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(59, 130, 246, 0.12));
+    filter: blur(100px);
+    animation-duration: 8s;
+    animation-delay: -5s;
+  }
+
+  .blob-bottom {
+    bottom: -300px;
+    left: 50%;
+    width: 800px;
+    height: 500px;
+    background: rgba(94, 106, 210, 0.1);
+    filter: blur(120px);
+    transform: translateX(-50%);
+    animation: pulse-scale 8s ease-in-out infinite;
+    animation-play-state: var(--play);
+  }
+
+  @media (width < 48rem) {
+    .blob-tertiary,
+    .blob-bottom {
+      display: none;
+    }
+  }
+
+  /* ---- Buttons (§3.1 + §3.2 #3) ---- */
+  .btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0.625rem 1.125rem;
+    border-radius: 0.5rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    isolation: isolate;
+    transition:
+      background-color 200ms ease-out,
+      box-shadow 200ms ease-out,
+      color 200ms ease-out,
+      transform 200ms var(--ease-expo-out);
+  }
+
+  .btn:active {
+    transform: scale(0.98);
+  }
+
+  .btn-primary {
+    background-color: #5e6ad2;
+    color: #ffffff;
+    box-shadow: var(--shadow-accent-glow);
+  }
+
+  /* Shine sweep. */
+  .btn-primary::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.18) 50%, transparent 70%);
+    transform: translateX(-120%);
+    transition: transform 600ms var(--ease-expo-out);
+  }
+
+  .btn-primary:hover {
+    /* Stays #5E6AD2: white on #6872D9 fails 4.5:1. Hover = more glow + brighter border. */
+    box-shadow:
+      0 0 0 1px rgba(124, 133, 227, 0.9),
+      0 6px 20px rgba(94, 106, 210, 0.45),
+      0 0 40px rgba(94, 106, 210, 0.25),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.25);
+  }
+
+  .btn-primary:hover::after {
+    transform: translateX(120%);
+  }
+
+  .btn-primary:active {
+    box-shadow: 0 0 0 1px rgba(94, 106, 210, 0.5), 0 2px 6px rgba(94, 106, 210, 0.25), inset 0 1px 0 0 rgba(255, 255, 255, 0.15);
+  }
+
+  .btn-secondary {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #ededef;
+    box-shadow: var(--shadow-inner-highlight), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  }
+
+  .btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    box-shadow: var(--shadow-inner-highlight), 0 0 0 1px rgba(255, 255, 255, 0.1), 0 0 24px rgba(94, 106, 210, 0.12);
+  }
+
+  .btn-ghost {
+    background-color: transparent;
+    color: #8a8f98;
+  }
+
+  .btn-ghost:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #ededef;
+  }
+
+  .btn-sm {
+    min-height: 2.25rem;
+    padding: 0.375rem 0.875rem;
+    font-size: 0.875rem;
+  }
+
+  /* ---- Cards (§3.1 base card + spotlight + hover gradient border) ---- */
+  .card {
+    position: relative;
+    border-radius: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background-color: #0b0b0d;
+    background-image:
+      linear-gradient(to right, transparent, rgba(255, 255, 255, 0.14), transparent),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+    background-size:
+      100% 1px,
+      100% 100%;
+    background-repeat: no-repeat;
+    box-shadow: var(--shadow-card);
+    isolation: isolate;
+    transition:
+      transform 300ms var(--ease-expo-out),
+      box-shadow 300ms ease-out,
+      border-color 300ms ease-out;
+  }
+
+  .card-glass {
+    background-color: rgba(10, 10, 12, 0.6);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+  }
+
+  .card-gradient {
+    background-image:
+      linear-gradient(to right, transparent, rgba(255, 255, 255, 0.14), transparent),
+      radial-gradient(ellipse at top left, rgba(94, 106, 210, 0.08), transparent 60%),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+    background-size:
+      100% 1px,
+      100% 100%,
+      100% 100%;
+  }
+
+  /* Mouse-tracking spotlight: 300px diameter, accent at 15%, position from CSSOM vars. */
+  .card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    pointer-events: none;
+    background: radial-gradient(150px circle at var(--spot-x, 50%) var(--spot-y, 50%), rgba(94, 106, 210, 0.15), transparent 100%);
+    opacity: 0;
+    transition: opacity 300ms ease-out;
+  }
+
+  /* Hover gradient border (§3.1). */
+  .card::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    pointer-events: none;
+    background: linear-gradient(to bottom, rgba(94, 106, 210, 0.3), transparent);
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 300ms ease-out;
+  }
+
+  .card-interactive:hover,
+  .card-interactive:focus-within {
+    transform: translateY(var(--lift));
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  .card-interactive:hover::after,
+  .card-interactive:focus-within::after {
+    opacity: 1;
+  }
+
+  .card[data-spot]::before {
+    opacity: 1;
+  }
+
+  /* Whole-card link: the title link stretches over the card. */
+  .card-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: 1rem;
+  }
+
+  .card-link:focus-visible {
+    box-shadow: none;
+  }
+
+  .card-link:focus-visible::after {
+    box-shadow: 0 0 0 2px #050506, 0 0 0 4px #7c85e3;
+  }
+
+  .card-cover {
+    position: relative;
+    overflow: hidden;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background-color: #050506;
+  }
+
+  /* The cover box sets the size (aspect ratio, or flex on desktop); the image fills it. */
+  .card-cover img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Diagrams are never cropped: letterbox them on the matching dark surface. */
+  /* The image box is sized to the drawing itself (centred, scaled to fit), so the
+     mask fades the diagram's real edges into the cover instead of leaving seams. */
+  .card-cover img[src$=".svg"] {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    margin: auto;
+    object-fit: contain;
+    -webkit-mask-image:
+      linear-gradient(to right, transparent, #000 8%, #000 92%, transparent),
+      linear-gradient(to bottom, transparent, #000 10%, #000 90%, transparent);
+    -webkit-mask-composite: source-in;
+    mask-image:
+      linear-gradient(to right, transparent, #000 8%, #000 92%, transparent),
+      linear-gradient(to bottom, transparent, #000 10%, #000 90%, transparent);
+    mask-composite: intersect;
+  }
+
+  /* Scrim keeps any overlaid text readable. */
+  .card-cover::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(5, 5, 6, 0.55), rgba(5, 5, 6, 0) 60%);
+  }
+
+  /* ---- Bento (§3.1 + §3.2 #9) ---- */
+  .bento {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+  }
+
+  @media (width >= 48rem) {
+    .bento {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+  }
+
+  @media (width >= 64rem) {
+    .bento {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      grid-auto-rows: minmax(180px, auto);
+      gap: 1.5rem;
+    }
+  }
+
+  /* ---- Header + mobile menu ---- */
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    height: var(--header-h);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    background-color: rgba(5, 5, 6, 0.72);
+  }
+
+  @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    .site-header {
+      -webkit-backdrop-filter: saturate(140%) blur(16px);
+      backdrop-filter: saturate(140%) blur(16px);
+    }
+  }
+
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.25rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    color: #8a8f98;
+    transition:
+      color 200ms ease-out,
+      background-color 200ms ease-out;
+  }
+
+  .nav-link:hover {
+    color: #ededef;
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .nav-link[aria-current="page"] {
+    color: #ededef;
+    background-color: rgba(255, 255, 255, 0.06);
+  }
+
+  .menu > summary {
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .menu > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .menu .icon-close,
+  .menu[open] .icon-open {
+    display: none;
+  }
+
+  .menu[open] .icon-close {
+    display: inline-flex;
+  }
+
+  /* Hangs from the sticky header (its containing block), wherever the header is. */
+  .menu-panel {
+    position: absolute;
+    inset-inline: 0;
+    top: 100%;
+    max-height: calc(100vh - var(--header-h));
+    max-height: calc(100dvh - var(--header-h));
+    overflow-y: auto;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    background-color: rgba(5, 5, 6, 0.95);
+  }
+
+  @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    .menu-panel {
+      -webkit-backdrop-filter: blur(24px);
+      backdrop-filter: blur(24px);
+    }
+  }
+
+  .menu[open] .menu-panel {
+    animation: menu-in 200ms var(--ease-expo-out) both;
+    animation-play-state: var(--play);
+  }
+
+  .menu-link {
+    display: flex;
+    align-items: center;
+    min-height: 3rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 1.0625rem;
+    color: #ededef;
+    transition: background-color 200ms ease-out;
+  }
+
+  .menu-link:hover,
+  .menu-link[aria-current="page"] {
+    background-color: rgba(255, 255, 255, 0.06);
+  }
+
+  /* ---- Test banner ---- */
+  .test-banner {
+    background-color: #f5b83d;
+    color: #050506;
+  }
+
+  /* ---- Motion switch ---- */
+  .switch {
+    appearance: none;
+    -webkit-appearance: none;
+    position: relative;
+    flex: none;
+    width: 2.5rem;
+    height: 1.5rem;
+    border-radius: 9999px;
+    background-color: rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+    cursor: pointer;
+    transition: background-color 200ms ease-out;
+  }
+
+  .switch::before {
+    content: "";
+    position: absolute;
+    top: 0.1875rem;
+    left: 0.1875rem;
+    width: 1.125rem;
+    height: 1.125rem;
+    border-radius: 9999px;
+    background-color: #8a8f98;
+    transition:
+      transform 200ms var(--ease-expo-out),
+      background-color 200ms ease-out;
+  }
+
+  .switch:checked {
+    background-color: #5e6ad2;
+  }
+
+  .switch:checked::before {
+    transform: translateX(1rem);
+    background-color: #ffffff;
+  }
+
+  /* ---- Inputs ---- */
+  .input {
+    min-height: 2.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: #0f0f12;
+    color: #f3f4f6;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .input:focus {
+    border-color: #5e6ad2;
+    box-shadow: 0 0 0 3px rgba(94, 106, 210, 0.3);
+  }
+
+  /* ---- Hero parallax (§3.4): CSS scroll-driven, home only ----
+     Progress follows the hero's own first half leaving the viewport (a view
+     timeline named on the section), so content fades as it scrolls away rather
+     than mid-screen. Timeline names go through custom properties: the minifier
+     would otherwise fold them into the animation shorthand, where they are invalid. */
+  @supports (animation-timeline: scroll()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .hero {
+        view-timeline-name: --hero;
+        /* Ignore scroll-padding-top (sticky header offset): at scroll 0 the hero is fully opaque. */
+        view-timeline-inset: 0px;
+      }
+
+      html:not([data-motion="paused"]):not(:has(#motion-pause:checked)) .hero-parallax {
+        --hero-timeline: --hero;
+        animation-name: hero-parallax;
+        animation-timing-function: linear;
+        animation-fill-mode: both;
+        animation-timeline: var(--hero-timeline);
+        animation-range: exit-crossing 0% exit-crossing 50%;
+      }
+    }
+  }
+
+  /* ---- Entrance reveal (§3.4): only elements JS marked as pending ---- */
+  .reveal-pending {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  .reveal-in {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 600ms var(--ease-expo-out),
+      transform 600ms var(--ease-expo-out);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal-pending {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  html[data-motion="paused"] .reveal-pending,
+  html:has(#motion-pause:checked) .reveal-pending {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Stagger delays (0.08s) for revealed children; classes set by effects.ts. */
+.reveal-d1 { transition-delay: 80ms; }
+.reveal-d2 { transition-delay: 160ms; }
+.reveal-d3 { transition-delay: 240ms; }
+.reveal-d4 { transition-delay: 320ms; }
+.reveal-d5 { transition-delay: 400ms; }
+
+/* =========================================================================
+   Print: black on white, no effects, link URLs printed (§2.3 CV, notes).
+   ========================================================================= */
+
+@media print {
+  @page {
+    margin: 16mm;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    background: transparent !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    filter: none !important;
+    -webkit-text-fill-color: #000000 !important;
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .ambient,
+  .site-header,
+  .site-footer,
+  .test-banner,
+  .skip-link,
+  .no-print {
+    display: none !important;
+  }
+
+  .card,
+  .card-cover {
+    border: 1px solid #999999 !important;
+    break-inside: avoid;
+  }
+
+  .reveal-pending {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  main a[href^="http"]::after,
+  main a[href^="/"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.85em;
+    word-break: break-all;
+  }
+
+  main a.no-print-url::after,
+  .card-link::after {
+    content: none !important;
+  }
+
+  h1,
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+}

@@ -1,0 +1,11 @@
+---
+import type { GetStaticPaths } from 'astro';
+import LabTool from '../../views/LabTool.astro';
+import { registry } from '../../lab/registry';
+
+export const getStaticPaths = (() => registry.map((tool) => ({ params: { tool: tool.slug } }))) satisfies GetStaticPaths;
+
+const { tool } = Astro.params;
+---
+
+<LabTool lang="en" slug={tool} />
