@@ -3,9 +3,10 @@
 // Cards are placed like CSS grid auto-placement (first free slot, row-major),
 // then rows with spare columns are filled: in a row of single-height cards the
 // `wide` card (or the last one) absorbs the spare columns; elsewhere cards grow
-// into free cells on their right. With the four starter projects (hero 4×2,
-// tall 2×2, wide 3, standard 2) the third row would hold 5 of 6 columns, so
-// `wide` grows to 4: rows stay full and the layout stays asymmetric.
+// into free cells on their right, then down (up to two rows). With hero 4×2,
+// tall 2×2, wide 3 and standard 2 the third row would hold 5 of 6 columns, so
+// `wide` grows to 4. With hero, standard and wide, the standard card grows to
+// 2×2 beside the hero and `wide` takes the full third row.
 // Placement is emitted as static class names (no style attributes), so every
 // class below is spelled out for Tailwind.
 
@@ -106,6 +107,19 @@ function placeDesktop(sizes: BentoSize[]) {
       if (!canGrow) break;
       mark(p.row, x, 1, p.h);
       p.w += 1;
+    }
+  }
+  // Gaps below a card (beside a taller neighbour): grow it down, at most to two
+  // rows and never past the last row of the grid.
+  const lastRow = Math.max(...placed.map((p) => p.row + p.h - 1));
+  for (const p of placed) {
+    while (p.h < 2 && p.row + p.h <= lastRow) {
+      const y = p.row + p.h;
+      let canGrow = true;
+      for (let x = p.col; x < p.col + p.w; x++) if (!free(y, x)) canGrow = false;
+      if (!canGrow) break;
+      mark(y, p.col, p.w, 1);
+      p.h += 1;
     }
   }
   // A card that is alone in its row would fill all 6 columns; that's fine (and full).
