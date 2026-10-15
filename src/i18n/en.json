@@ -83,7 +83,7 @@
   "cv.links": "Links",
   "contact.title": "Contact",
   "contact.description": "How to reach Bahadır: email, GitHub and LinkedIn.",
-  "contact.intro": "Email is the best way to reach me. I read everything; replies usually take [TODO: e.g. two working days].",
+  "contact.intro": "Email is the best way to reach me. I read everything.",
   "contact.email": "Email",
   "contact.copy": "Copy email",
   "contact.copied": "Copied",
@@ -94,7 +94,5 @@
   "footer.social": "Profiles",
   "notFound.title": "Page not found",
   "notFound.body": "This page doesn't exist or has moved. These might help:",
-  "notFound.description": "The page you were looking for doesn't exist.",
-  "todo.github": "[TODO: GitHub URL]",
-  "todo.linkedin": "[TODO: LinkedIn URL]"
+  "notFound.description": "The page you were looking for doesn't exist."
 }

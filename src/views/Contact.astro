@@ -29,36 +29,26 @@ const linkClass =
     <section aria-labelledby="elsewhere">
       <h2 id="elsewhere" class="label-text mb-5 text-foreground-muted">{t(lang, 'contact.elsewhere')}</h2>
       <ul class="flex flex-col gap-2" role="list">
-        <li>
-          {
-            site.github ? (
-              <a href={site.github} class={linkClass} rel="me">
-                <Icon name="github" size={18} />
-                GitHub
-              </a>
-            ) : (
-              <span class="inline-flex min-h-11 items-center gap-3 text-foreground-muted">
-                <Icon name="github" size={18} />
-                {t(lang, 'todo.github')}
-              </span>
-            )
-          }
-        </li>
-        <li>
-          {
-            site.linkedin ? (
-              <a href={site.linkedin} class={linkClass} rel="me">
-                <Icon name="linkedin" size={18} />
-                LinkedIn
-              </a>
-            ) : (
-              <span class="inline-flex min-h-11 items-center gap-3 text-foreground-muted">
-                <Icon name="linkedin" size={18} />
-                {t(lang, 'todo.linkedin')}
-              </span>
-            )
-          }
-        </li>
+        {
+          site.github && (
+            <li>
+                <a href={site.github} class={linkClass} rel="me">
+                  <Icon name="github" size={18} />
+                  GitHub
+                </a>
+            </li>
+          )
+        }
+        {
+          site.linkedin && (
+            <li>
+                <a href={site.linkedin} class={linkClass} rel="me">
+                  <Icon name="linkedin" size={18} />
+                  LinkedIn
+                </a>
+            </li>
+          )
+        }
         <li>
           <a href={localizePath('/cv', lang)} class={linkClass}>
             <Icon name="file" size={18} />

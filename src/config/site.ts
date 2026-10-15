@@ -17,18 +17,18 @@ interface SiteConfig {
 export const site: SiteConfig = {
   name: 'Bahadır',
   /** Full name for the CV and JSON-LD. */
-  fullName: 'Bahadır [TODO: surname]',
+  fullName: 'Ahmet Bahadır Balcı',
   email: {
-    // [TODO: replace with the encoded local part of your address; currently encodes "name"]
-    user: 'ZW1hbg==',
+    // Encodes "contact" (reversed, then base64).
+    user: 'dGNhdG5vYw==',
     // Encodes "dalkav.uk".
     domain: 'a3UudmFrbGFk',
   },
-  /** Leave empty until known; the site then shows a visible [TODO] instead of a broken link. */
-  github: '', // [TODO: GitHub profile URL, e.g. https://github.com/<username>]
-  linkedin: '', // [TODO: LinkedIn profile URL]
+  /** Profile links; an empty string hides the link. */
+  github: 'https://github.com/c4es1um137',
+  linkedin: 'https://www.linkedin.com/in/abahadirbalci/',
   /** GitHub repository, used for "source" links on lab tools. */
-  repo: '', // [TODO: repository URL, e.g. https://github.com/<username>/dalkav-site]
+  repo: 'https://github.com/c4es1um137/dalkav-site',
   cv: {
     en: '/cv/bahadir-cv-en.pdf',
     tr: '/cv/bahadir-cv-tr.pdf',

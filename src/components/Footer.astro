@@ -18,40 +18,30 @@ const linkClass =
 
 <footer class="site-footer bg-background-deep border-border-default border-t">
   <div class="container flex flex-col gap-6 py-10 md:flex-row md:items-center md:justify-between">
-    <p class="text-sm text-foreground-muted">© {year} {t(lang, 'site.name')}</p>
+    <p class="text-sm text-foreground-muted">© {year} {site.fullName}</p>
 
     <nav aria-label={t(lang, 'footer.social')}>
       <ul class="flex flex-wrap items-center gap-x-2 gap-y-1">
-        <li>
-          {
-            site.github ? (
-              <a href={site.github} class={linkClass} rel="me">
-                <Icon name="github" />
-                GitHub
-              </a>
-            ) : (
-              <span class={linkClass}>
-                <Icon name="github" />
-                {t(lang, 'todo.github')}
-              </span>
-            )
-          }
-        </li>
-        <li>
-          {
-            site.linkedin ? (
-              <a href={site.linkedin} class={linkClass} rel="me">
-                <Icon name="linkedin" />
-                LinkedIn
-              </a>
-            ) : (
-              <span class={linkClass}>
-                <Icon name="linkedin" />
-                {t(lang, 'todo.linkedin')}
-              </span>
-            )
-          }
-        </li>
+        {
+          site.github && (
+            <li>
+                <a href={site.github} class={linkClass} rel="me">
+                  <Icon name="github" />
+                  GitHub
+                </a>
+            </li>
+          )
+        }
+        {
+          site.linkedin && (
+            <li>
+                <a href={site.linkedin} class={linkClass} rel="me">
+                  <Icon name="linkedin" />
+                  LinkedIn
+                </a>
+            </li>
+          )
+        }
         <li>
           <a href={rss} class={linkClass}>
             <Icon name="rss" />

@@ -144,8 +144,8 @@ const cardTitle = 'label-text mb-6 text-accent-text-raised';
                 </li>
               ))
             }
-            {site.github ? <li><a href={site.github} class="text-accent-text-raised underline underline-offset-4">GitHub</a></li> : <li class="text-foreground-muted">{t(lang, 'todo.github')}</li>}
-            {site.linkedin ? <li><a href={site.linkedin} class="text-accent-text-raised underline underline-offset-4">LinkedIn</a></li> : <li class="text-foreground-muted">{t(lang, 'todo.linkedin')}</li>}
+            {site.github && <li><a href={site.github} class="text-accent-text-raised underline underline-offset-4">GitHub</a></li>}
+            {site.linkedin && <li><a href={site.linkedin} class="text-accent-text-raised underline underline-offset-4">LinkedIn</a></li>}
           </ul>
         </Card>
       </aside>

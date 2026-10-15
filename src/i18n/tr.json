@@ -83,7 +83,7 @@
   "cv.links": "Bağlantılar",
   "contact.title": "İletişim",
   "contact.description": "Bahadır'a ulaşmanın yolları: e-posta, GitHub ve LinkedIn.",
-  "contact.intro": "Bana ulaşmanın en iyi yolu e-posta. Her mesajı okuyorum; genellikle [TODO: örn. iki iş günü] içinde yanıt veriyorum.",
+  "contact.intro": "Bana ulaşmanın en iyi yolu e-posta. Her mesajı okuyorum.",
   "contact.email": "E-posta",
   "contact.copy": "E-postayı kopyala",
   "contact.copied": "Kopyalandı",
@@ -94,7 +94,5 @@
   "footer.social": "Profiller",
   "notFound.title": "Sayfa bulunamadı",
   "notFound.body": "Bu sayfa yok ya da taşınmış. Şunlar işinize yarayabilir:",
-  "notFound.description": "Aradığınız sayfa bulunamadı.",
-  "todo.github": "[TODO: GitHub adresi]",
-  "todo.linkedin": "[TODO: LinkedIn adresi]"
+  "notFound.description": "Aradığınız sayfa bulunamadı."
 }

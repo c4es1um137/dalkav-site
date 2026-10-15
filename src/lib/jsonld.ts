@@ -12,7 +12,8 @@ export function personJsonLd(lang: Lang, url: string): Record<string, unknown> {
   return {
     '@context': 'https://schema.org',
     '@type': 'Person',
-    name: site.name,
+    name: site.fullName,
+    alternateName: site.name,
     url,
     jobTitle: lang === 'en' ? 'Electrical Engineering student' : 'Elektrik Mühendisliği öğrencisi',
     address: { '@type': 'PostalAddress', addressLocality: lang === 'en' ? 'Istanbul' : 'İstanbul', addressCountry: 'TR' },
@@ -36,6 +37,6 @@ export function blogPostingJsonLd(note: Note, ogImage: string): Record<string, u
     url,
     mainEntityOfPage: url,
     image: new URL(ogImage, env.site).href,
-    author: { '@type': 'Person', name: site.name, url: new URL(note.lang === 'en' ? '/' : '/tr', env.site).href },
+    author: { '@type': 'Person', name: site.fullName, url: new URL(note.lang === 'en' ? '/' : '/tr', env.site).href },
   };
 }
