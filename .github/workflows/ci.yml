@@ -37,6 +37,8 @@ jobs:
         run: npm ci
 
       - name: Type-check
+        env:
+          SITE_ENV: test # the config validates SITE_ENV even for astro check
         run: npm run check
 
       - name: Production build + content guard + verify-dist
