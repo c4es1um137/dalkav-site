@@ -102,3 +102,23 @@ asking first.
 | Pages build uses the wrong Node | `.nvmrc` missing or uses a codename | `.nvmrc` must contain a number (`24`) |
 | CSP errors in the console on www only | Zone-wide Rocket Loader or Email Obfuscation injecting scripts | Add a hostname-scoped Configuration Rule that turns them off (see `SETUP.md` step 7) |
 | `/api/lab/*` returns old values | Pages variables changed without a redeploy | Variables apply to new deployments: retry the latest deployment |
+
+## Moving off Pages (Workers or self-hosting)
+
+The site stays on Pages for now. The Cloudflare dashboard labels Pages as
+legacy and steers new projects to Workers, but Pages is still supported. The
+build output in `dist/` is plain static files that any host can serve. Only
+these parts are Pages-specific and need replacing on another platform:
+
+| Pages feature | Where it lives | What replaces it |
+|---|---|---|
+| Build environment detection (`CF_PAGES`, `CF_PAGES_BRANCH`, `CF_PAGES_COMMIT_SHA`) | `src/env.ts` | The new platform's build variables |
+| Security and caching headers (`dist/_headers`) | `src/integrations/env-files.ts`, list in `src/config/security-headers.ts` | Workers: `_headers` also works with static assets. Self-hosted: the same headers in the web server config |
+| Clean URLs (`/notes` served from `notes.html`, `.html` and trailing-slash redirects) | Pages default behaviour | Workers: assets `html_handling` (retest). Self-hosted: rewrite rules |
+| Language-specific 404 pages | Pages default behaviour | Workers: `not_found_handling: "404-page"`. Self-hosted: error-page rules (`/tr/*` → `tr/404.html`) |
+| Lab Functions and `_routes.json` | `functions/`, `public/_routes.json` | Workers: compile with `wrangler pages functions build` or rewrite. Self-hosted: a small service |
+| Branch deploys and `test.dalkav.uk` | Pages Git integration, branch alias CNAME | Workers Builds previews (served at `<branch>.<domain>`), or a build-and-copy job |
+| Access on previews and test | Zero Trust applications | The same applications; self-hosted behind Cloudflare Tunnel |
+
+Moving to Workers needs a Wrangler config file: ask before adding one. A move
+is a planned change on `test` first, never a dashboard switch on production.
