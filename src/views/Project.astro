@@ -29,7 +29,7 @@ const { prev, next } = neighbours(list, index);
 const notes = await relatedNotes(slug, lang);
 const links = entryPage('projects', slug, lang, hasCounterpart(all, slug, lang));
 const ogImage = await coverOgImage(data.cover, lang);
-const period = formatPeriod(data.period, lang);
+const period = data.period ? formatPeriod(data.period, lang) : '';
 const statusLabel = t(lang, data.status === 'ongoing' ? 'status.ongoing' : 'status.completed');
 const factLabel = 'label-text text-foreground-muted';
 ---
@@ -55,7 +55,7 @@ const factLabel = 'label-text text-foreground-muted';
         {t(lang, 'cta.allProjects')}
       </a>
       <p class="label-text mb-5 flex flex-wrap items-center gap-3 text-accent-text">
-        <span>{t(lang, 'projects.label')} · {period}</span>
+        <span>{period ? `${t(lang, 'projects.label')} · ${period}` : t(lang, 'projects.label')}</span>
         {data.draft && <span class="pill border-[rgba(245,184,61,0.5)] text-[#F5B83D]">{t(lang, 'draft')}</span>}
       </p>
       <h1 class="text-gradient-headline text-4xl leading-tight font-semibold tracking-tight md:text-5xl lg:text-6xl">{data.title}</h1>
@@ -64,14 +64,22 @@ const factLabel = 'label-text text-foreground-muted';
 
     <Card class="mt-12 p-6 md:p-8">
       <dl class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <div>
-          <dt class={factLabel}>{t(lang, 'projects.role')}</dt>
-          <dd class="mt-2 text-foreground">{data.role}</dd>
-        </div>
-        <div>
-          <dt class={factLabel}>{t(lang, 'projects.period')}</dt>
-          <dd class="mt-2 text-foreground">{period}</dd>
-        </div>
+        {
+          data.role && (
+            <div>
+              <dt class={factLabel}>{t(lang, 'projects.role')}</dt>
+              <dd class="mt-2 text-foreground">{data.role}</dd>
+            </div>
+          )
+        }
+        {
+          period && (
+            <div>
+              <dt class={factLabel}>{t(lang, 'projects.period')}</dt>
+              <dd class="mt-2 text-foreground">{period}</dd>
+            </div>
+          )
+        }
         <div>
           <dt class={factLabel}>{t(lang, 'projects.status')}</dt>
           <dd class="mt-2">

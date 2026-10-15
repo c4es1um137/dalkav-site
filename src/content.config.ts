@@ -46,12 +46,13 @@ const projects = defineCollection({
     z.object({
       title: z.string().min(1).max(90),
       summary: z.string().min(1).max(220),
-      role: z.string().min(1),
+      // Optional: leave out role or period to hide them on the card and page.
+      role: z.string().min(1).optional(),
       period: z.object({
         // A visible "[TODO: …]" is allowed while the year is unknown (never invent dates).
         start: z.union([z.number().int().min(1990).max(2100), z.string().regex(/^\[TODO[^\]]*\]$/)]),
         end: z.union([z.number().int().min(1990).max(2100), z.literal('present')]),
-      }),
+      }).optional(),
       status: z.enum(['completed', 'ongoing']),
       order: z.number(),
       featured: z.boolean().default(false),
@@ -80,8 +81,8 @@ const cv = defineCollection({
     experience: z.array(
       z.object({
         org: z.string(),
-        role: z.string(),
-        period: z.string(),
+        role: z.string().optional(),
+        period: z.string().optional(),
         bullets: z.array(z.string()).default([]),
       }),
     ),

@@ -18,7 +18,7 @@ export function personJsonLd(lang: Lang, url: string): Record<string, unknown> {
     jobTitle: lang === 'en' ? 'Electrical Engineering student' : 'Elektrik Mühendisliği öğrencisi',
     address: { '@type': 'PostalAddress', addressLocality: lang === 'en' ? 'Istanbul' : 'İstanbul', addressCountry: 'TR' },
     affiliation: { '@type': 'CollegeOrUniversity', name: 'İstanbul Teknik Üniversitesi', alternateName: 'İTÜ' },
-    memberOf: { '@type': 'SportsTeam', name: 'İTÜ Racing' },
+    memberOf: { '@type': 'SportsTeam', name: 'ITU Racing' },
     ...(sameAs().length ? { sameAs: sameAs() } : {}),
   };
 }

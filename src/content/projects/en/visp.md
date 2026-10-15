@@ -1,8 +1,6 @@
 ---
 title: "VISP — Wearable Stress-Fracture Detection"
 summary: "A wearable system that aims to flag early signs of stress fractures in athletes before they become injuries."
-role: "[TODO: your role]"
-period: { start: "[TODO: start year]", end: present }
 status: ongoing
 order: 2
 featured: true
@@ -18,7 +16,7 @@ Stress fractures build up from repeated load and are often noticed only once the
 
 ## What I did
 
-VISP is a startup project building a wearable system that aims to flag early signs of stress fractures in athletes. The system chain runs from a body-worn sensor through a microcontroller to a phone app that the athlete or coach sees. [TODO: your role, period and specific contributions]
+VISP is a startup project building a wearable system that aims to flag early signs of stress fractures in athletes. The system chain runs from a body-worn sensor through a microcontroller to a phone app that the athlete or coach sees.
 
 ## Results
 

@@ -138,7 +138,7 @@ export async function tagCounts(lang: Lang): Promise<Array<{ tag: string; count:
   return [...counts.entries()].map(([tag, count]) => ({ tag, count })).sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag));
 }
 
-export function formatPeriod(period: Project['data']['period'], lang: Lang): string {
+export function formatPeriod(period: NonNullable<Project['data']['period']>, lang: Lang): string {
   const end = period.end === 'present' ? t(lang, 'projects.present') : String(period.end);
   if (period.start === period.end) return String(period.start);
   // Spaced dash only when the start is still a [TODO] placeholder.

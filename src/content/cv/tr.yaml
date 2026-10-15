@@ -1,31 +1,37 @@
 # Türkçe özgeçmiş. Yalnızca gerçek bilgiler; bilinmeyenler doldurulana kadar görünür [TODO: …] olarak kalır.
 name: "Ahmet Bahadır Balcı"
-headline: "Elektrik Mühendisliği öğrencisi · İTÜ Racing eski takım kaptanı"
+headline: "Elektrik Mühendisliği öğrencisi · ITU Racing eski takım kaptanı"
 location: "İstanbul, Türkiye"
-summary: "İTÜ'de Elektrik Mühendisliği lisans öğrencisiyim. Formula Student'ta yüksek gerilim akümülatör sistemleri ve elektrikli araç teknik muayenesi üzerinde uygulamalı deneyim kazandım; 2024–25 sezonunda İTÜ Racing'in kaptanıydım. Mühendislik stajı arıyorum [TODO: hedef dönem]."
+summary: "İTÜ'de Elektrik Mühendisliği lisans öğrencisiyim. Formula Student'ta yüksek gerilim akümülatör sistemleri ve elektrikli araç teknik muayenesi üzerinde uygulamalı deneyim kazandım; 2024–25 sezonunda ITU Racing'in kaptanıydım; şimdi Formula Student Türkiye'de gönüllüyüm. Mühendislik stajı arıyorum."
 
 experience:
-  - org: "İTÜ Racing (Formula Student)"
+  - org: "ITU Racing (Formula Student)"
     role: "Takım Kaptanı"
     period: "2024–2025"
     bullets:
-      - "[TODO: takım büyüklüğü, kapsam, önemli kararlar]"
-  - org: "İTÜ Racing (Formula Student)"
+      - "84 kişilik takımı yönettim."
+      - "Takım Formula SAE Italy (FSATA) 2025'te genel sıralamada 11. oldu."
+      - "Takım 2025 Formula Student Dünya Sıralaması'nda 78., Türkiye'de 1. oldu."
+  - org: "ITU Racing (Formula Student)"
     role: "Elektrik Sistemleri üyesi"
     period: "2022–2024"
     bullets:
-      - "Yüksek gerilim akümülatörü ve çekiş sistemi üzerinde çalıştım [TODO: ayrıntılar]"
-      - "Elektrik sistemlerini teknik muayeneye hazırladım [TODO]"
+      - "Evirici–motor kalibrasyonu, elektrik kutuları, kablo demeti tasarımı ve akümülatör paketlemesi üzerinde çalıştım."
+      - "Aracın elektrik sistemlerini teknik muayeneye hazırladım."
+      - "Takımla beş Formula Student yarışmasına katıldım (2022–2025)."
+  - org: "Formula Student Türkiye"
+    role: "Elektrik Teknik Muayene Hakemi (gönüllü)"
+    period: "2026"
+    bullets:
+      - "FST 2026'da elektrik teknik muayenesinde görev aldım; elektrik ve akümülatör muayenesindeki uygulamalı deneyimimi kullandım."
   - org: "VISP"
-    role: "[TODO: rol]"
-    period: "[TODO: tarihler]"
     bullets:
       - "Sporcular için giyilebilir stres kırığı tespit sistemi."
 
 education:
   - school: "İstanbul Teknik Üniversitesi (İTÜ)"
     degree: "Elektrik Mühendisliği, lisans"
-    period: "2022–[TODO: tahmini mezuniyet]"
+    period: "2022–2028 (beklenen)"
 
 skills:
   - category: "Donanım"
@@ -41,7 +47,11 @@ languages:
   - name: "Türkçe"
     level: "Ana dil"
   - name: "İngilizce"
-    level: "[TODO]"
+    level: "C1"
+  - name: "İtalyanca"
+    level: "Başlangıç"
+  - name: "Almanca"
+    level: "Başlangıç"
 
 # Profil bağlantılarını öğrenince ekle, örn.:
 #   - label: "GitHub"

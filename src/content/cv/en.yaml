@@ -1,31 +1,37 @@
 # English CV. Facts only; unknowns stay as visible [TODO: …] until filled in.
 name: "Ahmet Bahadır Balcı"
-headline: "Electrical Engineering student · Former Team Captain, İTÜ Racing"
+headline: "Electrical Engineering student · Former Team Captain, ITU Racing"
 location: "Istanbul, Türkiye"
-summary: "Electrical Engineering undergraduate at İTÜ with hands-on experience in high-voltage accumulator systems and EV electrical inspection from Formula Student, where I captained İTÜ Racing in 2024–25. Looking for an engineering internship [TODO: target period]."
+summary: "Electrical Engineering undergraduate at İTÜ with hands-on experience in high-voltage accumulator systems and EV electrical inspection from Formula Student, where I captained ITU Racing in 2024–25 and now volunteer at Formula Student Türkiye. Looking for an engineering internship."
 
 experience:
-  - org: "İTÜ Racing (Formula Student)"
+  - org: "ITU Racing (Formula Student)"
     role: "Team Captain"
     period: "2024–2025"
     bullets:
-      - "[TODO: team size, scope, key decisions]"
-  - org: "İTÜ Racing (Formula Student)"
+      - "Led a team of 84 people."
+      - "The team finished 11th overall at Formula SAE Italy (FSATA) 2025."
+      - "The team ranked 78th in the 2025 Formula Student World Ranking, first in Türkiye."
+  - org: "ITU Racing (Formula Student)"
     role: "Electrical Systems member"
     period: "2022–2024"
     bullets:
-      - "Worked on the high-voltage accumulator and tractive system [TODO: specifics]"
-      - "Prepared electrical systems for scrutineering [TODO]"
+      - "Worked on inverter–motor calibration, electrical enclosures, wiring harness design and accumulator packaging."
+      - "Prepared the car's electrical systems for scrutineering."
+      - "Attended five Formula Student competitions with the team (2022–2025)."
+  - org: "Formula Student Türkiye"
+    role: "Electrical Scrutineer (volunteer)"
+    period: "2026"
+    bullets:
+      - "Electrical scrutineering at FST 2026, drawing on hands-on experience in electrical and accumulator inspection."
   - org: "VISP"
-    role: "[TODO: role]"
-    period: "[TODO: dates]"
     bullets:
       - "Wearable stress-fracture detection system for athletes."
 
 education:
   - school: "İstanbul Teknik Üniversitesi (İTÜ)"
     degree: "B.Sc. Electrical Engineering"
-    period: "2022–[TODO: expected graduation]"
+    period: "2022–2028 (expected)"
 
 skills:
   - category: "Hardware"
@@ -41,7 +47,11 @@ languages:
   - name: "Turkish"
     level: "Native"
   - name: "English"
-    level: "[TODO: level]"
+    level: "C1"
+  - name: "Italian"
+    level: "Beginner"
+  - name: "German"
+    level: "Beginner"
 
 # Add profile links once known, e.g.:
 #   - label: "GitHub"

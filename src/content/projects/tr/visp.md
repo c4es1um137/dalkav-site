@@ -1,8 +1,6 @@
 ---
 title: "VISP — Giyilebilir Stres Kırığı Tespiti"
 summary: "Sporcularda stres kırıklarının erken belirtilerini, sakatlığa dönüşmeden yakalamayı hedefleyen giyilebilir bir sistem."
-role: "[TODO: rolün]"
-period: { start: "[TODO: başlangıç yılı]", end: present }
 status: ongoing
 order: 2
 featured: true
@@ -18,7 +16,7 @@ Stres kırıkları tekrarlanan yüklenmeyle oluşur ve çoğu zaman ancak ağrı
 
 ## Ne yaptım
 
-VISP, sporcularda stres kırıklarının erken belirtilerini yakalamayı hedefleyen giyilebilir bir sistem geliştiren bir girişim projesi. Sistem; vücuda takılan bir sensörden mikrodenetleyiciye, oradan da sporcunun veya antrenörün gördüğü telefon uygulamasına uzanıyor. [TODO: rolün, dönem ve somut katkıların]
+VISP, sporcularda stres kırıklarının erken belirtilerini yakalamayı hedefleyen giyilebilir bir sistem geliştiren bir girişim projesi. Sistem; vücuda takılan bir sensörden mikrodenetleyiciye, oradan da sporcunun veya antrenörün gördüğü telefon uygulamasına uzanıyor.
 
 ## Sonuçlar
 

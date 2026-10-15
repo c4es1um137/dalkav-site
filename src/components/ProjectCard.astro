@@ -32,7 +32,7 @@ const statusLabel = t(lang, data.status === 'ongoing' ? 'status.ongoing' : 'stat
         <span class={`size-1.5 rounded-full ${data.status === 'ongoing' ? 'bg-[#9FD4B0]' : 'bg-[#8A8F98]'}`} aria-hidden="true"></span>
         {statusLabel}
       </span>
-      <span class="label-text text-foreground-muted">{formatPeriod(data.period, lang)}</span>
+      {data.period && <span class="label-text text-foreground-muted">{formatPeriod(data.period, lang)}</span>}
       {foreign && <span class="pill" lang={project.lang}>{upper(project.lang, lang)}</span>}
       {data.draft && <span class="pill border-[rgba(245,184,61,0.5)] text-[#F5B83D]">{t(lang, 'draft')}</span>}
     </div>
@@ -42,9 +42,13 @@ const statusLabel = t(lang, data.status === 'ongoing' ? 'status.ongoing' : 'stat
       </a>
     </Heading>
     <p class="text-sm leading-relaxed text-foreground-muted md:text-base" lang={foreign ? project.lang : undefined}>{data.summary}</p>
-    <p class="text-sm text-foreground-muted">
-      <span class="sr-only">{t(lang, 'projects.role')}: </span><span class="text-[#C6C9D0]" lang={foreign ? project.lang : undefined}>{data.role}</span>
-    </p>
+    {
+      data.role && (
+        <p class="text-sm text-foreground-muted">
+          <span class="sr-only">{t(lang, 'projects.role')}: </span><span class="text-[#C6C9D0]" lang={foreign ? project.lang : undefined}>{data.role}</span>
+        </p>
+      )
+    }
     {
       data.tags.length > 0 && (
         <ul class="flex flex-wrap gap-2" aria-label={t(lang, 'projects.tags')}>
